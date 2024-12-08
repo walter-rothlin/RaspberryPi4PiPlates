@@ -23,66 +23,71 @@
 from sense_hat import SenseHat
 from time import sleep
 from enum import Enum
+from datetime import datetime
 
 class LogLevel(Enum):
-    NO = 0
+    ALLWAYS = 0
     INFO = 1
     WARNING = 2
     ERROR = 3
     FATAL = 4
+    NO_TRACE = 9
 
+def get_status_string(actual_log_level, log_level_msg, message, with_timestamp=True):
+    timestamp_str = ''
+    if with_timestamp:
+        timestamp_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if log_level_msg.value >= actual_log_level.value:
+        return f'{timestamp_str} {log_level_msg.name}: {message}'
+    else:
+        return ''
+
+def print_if_not_empty(message):
+    if message != '':
+        print(message)
 
 class MySenseHat(SenseHat):
     '''
     A subclass from SenseHat where set_pixel() has been overwritten and draw_line() added.
     '''
+    red = (255, 0, 0)
+    green = (0, 255, 0)
+    blue = (0, 0, 255)
+    yellow = (255, 255, 0)
+    magenta = (255, 0, 255)
+    cyan = (0, 255, 255)
+    white = (255, 255, 255)
+    grey = (100, 100, 100)
+    black = (0, 0, 0)
 
-    red      = (255,   0,   0)
-    green    = (0,   255,   0)
-    blue     = (0,     0, 255)
-    yellow   = (255, 255,   0)
-    mangenta = (255,   0, 255)
-    cyan     = (0,   255, 255)
-    white    = (255, 255, 255)
-    grey     = (100, 100, 100)
-    black    = (0,     0,   0)
 
     # Initializer and setter/Getter and Properties
     # ============================================
-    def __init__(self, background_color=cyan, forground_color=red, trace_on=False):
+    def __init__(self, default_bg_color=cyan, default_fg_color=red, trace_level_on=LogLevel.WARNING):
         '''
         Constructor
-        :param background_color: color of the background
-        :param forground_color: color of the forground
-        :param trace_on: True/False for debug mode
-
+        :param default_bg_color: color of the background
+        :param default_fg_color: color of the foreground
+        :param trace_on: LogLevel for debug mode
         '''
-        self.__fg_color = forground_color
-        self.__bg_color = background_color
-        self.__debug = trace_on
-        # print('__init__():', trace_on, self.__debug)
-        # super().clear(r=255, g=0, b=255)
+        self.__default_fg_color = default_fg_color
+        self.__default_bg_color = default_bg_color
+        self.__trace_level_on = trace_level_on
         super().__init__()
 
+    def set_debug_mode(self, trace_level_on):
+        self.__trace_level_on = trace_level_on
 
-    def set_debug_mode(self, trace_on=None):
-        if trace_on is not None:
-            self.__debug = trace_on
-            print(f'INFO: set_debug_mode({trace_on}) ==> {self.__debug}')
-        else:
-            self.__debug = False
-            print(f'INFO: set_debug_mode({trace_on}) ==> {self.__debug}')
 
     def get_debug_mode(self):
-        return self.__debug
+        return self.__trace_level_on
 
     debug_mode = property(get_debug_mode, set_debug_mode)
 
 
-
     # Business Methods
     # ================
-    def set_pixel(self, x, y, r=255, g=0, b=0, pixel_color=None):
+    def set_pixel(self, x, y, r=None, g=None, b=None, pixel_color=None):
         '''
         Overwrites the set_pixel() method from the SenseHat class.
         :param x: x-coordinate (0-7)
@@ -93,15 +98,23 @@ class MySenseHat(SenseHat):
         :param b: blue color value (0-255)
         
         :param pixel_color: tuple with 3 color values (r, g, b)
+
         :return: None
         '''
 
-        print(f'INFO: set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
+        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})')) 
 
         if pixel_color is not None:
             r = round(pixel_color[0])
             g = round(pixel_color[1])
             b = round(pixel_color[2])
+        else:
+            if r is None:
+                r = self.__default_fg_color[0]
+            if g is None:
+                g = self.__default_fg_color[1]
+            if b is None:
+                b = self.__default_fg_color[2]
 
         if type(x) is int:
             pass
@@ -112,7 +125,7 @@ class MySenseHat(SenseHat):
                 x = x.replace(',', '.').replace(' ', '')
                 x = round(float(x))
             except ValueError:
-                print(f'ERROR: set_pixel(x={x}, y={y}) Coordinates can be converted!') if self.debug_mode else None
+                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR,f'set_pixel(x={x}, y={y}) Conversion failed!'))
                 x = -1
         else:
             x = -1
@@ -126,19 +139,18 @@ class MySenseHat(SenseHat):
                 y = y.replace(',', '.').replace(' ', '')
                 y = round(float(y))
             except ValueError:
-                print(f'ERROR: set_pixel(x={x}, y={y}) Coordinates can be converted!') if self.debug_mode else None
+                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR,f' set_pixel(x={x}, y={y}) Conversion failed!'))
                 y = -1
         else:
             y = -1
 
 
         if (0 <= x <= 7) and (0 <= y <= 7):
-            print(f'INFO: set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
+            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO,f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})\n'))
             super().set_pixel(x, y, r, g, b)
         else:
-            print(f'WARNING: set_pixel(x={x}, y={y}) Coordinates out of range!') if self.debug_mode else None
+            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING,(f'set_pixel(x={x}, y={y}) Coordinates out of range!\n')))
 
-        print() if self.debug_mode else None
 
 
 
@@ -194,8 +206,8 @@ class MySenseHat(SenseHat):
 def Test_set_pixel(sense, do_test=False):
         if do_test:
             old_state = sense.debug_mode 
-            sense.debug_mode = True
-            print('Test_set_pixel()....', end='')
+            sense.debug_mode = LogLevel.WARNING
+            print('Test_set_pixel()....')
             sense.clear()
             sense.set_pixel(0, 0, 255, 0, 0)
             sleep(0.5)
@@ -206,16 +218,23 @@ def Test_set_pixel(sense, do_test=False):
             sense.set_pixel('0', '7 , 32', 255, 255, 255)
             sleep(0.5)
             sense.set_pixel(' 4, 0 ', '2,2', 255, 255, 0)
-            print('... done')
             sleep(3)
+
+
             sense.clear()
+            sense.set_pixel(8,  0, 255, 0, 0)
+            sense.set_pixel(8, -1, 255, 0, 0)
+            sense.set_pixel(8, 'zzzz', 255, 0, 0)
+
+          
             sense.set_debug_mode = old_state
+            print('... done')
 
 
 def Test_draw_line(sense, do_test=True):
         if do_test:
             old_state = sense.debug_mode 
-            sense.set_debug_mode = True
+            sense.set_debug_mode = LogLevel.ALLWAYS
             print('Test_draw_line()....')
             print('     Rectangle....', end='')
             sense.clear()
@@ -244,7 +263,7 @@ def Test_draw_line(sense, do_test=True):
 if __name__ == '__main__':
     sense = MySenseHat()
     Test_set_pixel(sense, True)
-    Test_draw_line(sense, True)
+    # Test_draw_line(sense, True)
 
 
 
