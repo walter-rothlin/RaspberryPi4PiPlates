@@ -2,7 +2,7 @@
 
 # ------------------------------------------------------------------
 # Name  : Class_SenseHat.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/blob/main/01_PiPlates.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Class_MySenseHat.py
 #
 # Description: Sub-Class of SenseHat
 #
