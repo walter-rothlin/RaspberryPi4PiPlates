@@ -2,8 +2,8 @@
 
 # ------------------------------------------------------------------
 # Name: printIP.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/Source-Code/master/Python_WaltisExamples/Code_01_UtilityScripts/printIP.py
-#
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/printIP.py
+# 
 # Description: Zeigt die IP-Adresse auf der Sense-Hat LED Matrix
 #
 # API HAT: https://pythonhosted.org/sense-hat/api/

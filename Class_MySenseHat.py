@@ -17,10 +17,20 @@
 # 08-Dec-2023   Walter Rothlin      draw_line() implemented (extends)
 # 23-Dec-2023   Walter Rothlin      Test_Framework implemented
 # 06-Dec-2023   Walter Rothlin      Refactoring for HFU PY2
+# 08-Dec-2023   Walter Rothlin      Added Test-Cases
 # ------------------------------------------------------------------
 
 from sense_hat import SenseHat
 from time import sleep
+from enum import Enum
+
+class LogLevel(Enum):
+    NO = 0
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
+    FATAL = 4
+
 
 class MySenseHat(SenseHat):
     '''
@@ -58,10 +68,10 @@ class MySenseHat(SenseHat):
     def set_debug_mode(self, trace_on=None):
         if trace_on is not None:
             self.__debug = trace_on
-            # print(f'set_debug_mode({trace_on}) ==> {self.__debug}')
-        # else:
-            # self.__debug = False
-            # print(f'set_debug_mode({trace_on}) ==> {self.__debug}')
+            print(f'INFO: set_debug_mode({trace_on}) ==> {self.__debug}')
+        else:
+            self.__debug = False
+            print(f'INFO: set_debug_mode({trace_on}) ==> {self.__debug}')
 
     def get_debug_mode(self):
         return self.__debug
@@ -86,7 +96,7 @@ class MySenseHat(SenseHat):
         :return: None
         '''
 
-        print(f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
+        print(f'INFO: set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
 
         if pixel_color is not None:
             r = round(pixel_color[0])
@@ -123,7 +133,7 @@ class MySenseHat(SenseHat):
 
 
         if (0 <= x <= 7) and (0 <= y <= 7):
-            print(f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
+            print(f'INFO: set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})') if self.debug_mode else None
             super().set_pixel(x, y, r, g, b)
         else:
             print(f'WARNING: set_pixel(x={x}, y={y}) Coordinates out of range!') if self.debug_mode else None
@@ -153,7 +163,7 @@ class MySenseHat(SenseHat):
         else:
             draw_speed = 0
 
-        print(f'draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})') if self.debug_mode else None
+        print(f'INFO: draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})') if self.debug_mode else None
 
         if x_start == x_end:
             if y_start > y_end:
@@ -183,6 +193,8 @@ class MySenseHat(SenseHat):
 
 def Test_set_pixel(sense, do_test=False):
         if do_test:
+            old_state = sense.debug_mode 
+            sense.debug_mode = True
             print('Test_set_pixel()....', end='')
             sense.clear()
             sense.set_pixel(0, 0, 255, 0, 0)
@@ -194,13 +206,18 @@ def Test_set_pixel(sense, do_test=False):
             sense.set_pixel('0', '7 , 32', 255, 255, 255)
             sleep(0.5)
             sense.set_pixel(' 4, 0 ', '2,2', 255, 255, 0)
+            print('... done')
             sleep(3)
             sense.clear()
+            sense.set_debug_mode = old_state
 
 
 def Test_draw_line(sense, do_test=True):
         if do_test:
-            print('Test_draw_line()....', end='')
+            old_state = sense.debug_mode 
+            sense.set_debug_mode = True
+            print('Test_draw_line()....')
+            print('     Rectangle....', end='')
             sense.clear()
             sense.draw_line(0, 0, 7, 0, 255, 0, 0, 0.1)
             sleep(0.5)
@@ -209,9 +226,20 @@ def Test_draw_line(sense, do_test=True):
             sense.draw_line(7, 7, 0, 7, 0, 0, 255, 0.1)
             sleep(0.5)
             sense.draw_line(0, 7, 0, 0, 255, 255, 0, 0.1)
+            print('... done')
             sleep(3)
-            sense.clear()
 
+            print('     Kreuz....', end='')
+            sense.clear()
+            sense.draw_line(0, 0, 7, 7, 255, 0, 0, 0.1)
+            sleep(0.5)
+            sense.draw_line(7, 0, 0, 7, 0, 255, 0, 0.1)
+            print('... done')
+            sleep(3)
+
+            sense.clear()
+            sense.set_debug_mode = old_state
+            
 
 if __name__ == '__main__':
     sense = MySenseHat()

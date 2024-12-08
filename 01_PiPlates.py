@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # ------------------------------------------------------------------
-# Source: https://raw.githubusercontent.com/walter-rothlin/Source-Code/master/Python_Raspberry/03_PiPlates/01_PiPlates.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/01_PiPlates.py
 #
 # Description: Test Script for PiPlates
 #
