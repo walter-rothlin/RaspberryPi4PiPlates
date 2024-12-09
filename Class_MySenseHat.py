@@ -149,7 +149,7 @@ class MySenseHat(SenseHat):
             print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO,f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})\n'))
             super().set_pixel(x, y, r, g, b)
         else:
-            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING,(f'set_pixel(x={x}, y={y}) Coordinates out of range!\n')))
+            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING,f'set_pixel(x={x}, y={y}) Coordinates out of range!\n'))
 
 
 
@@ -175,7 +175,7 @@ class MySenseHat(SenseHat):
         else:
             draw_speed = 0
 
-        print(f'INFO: draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})') if self.debug_mode else None
+        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO,f'draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})'))
 
         if x_start == x_end:
             if y_start > y_end:
@@ -242,9 +242,9 @@ def Test_draw_line(sense, do_test=True):
             sleep(0.5)
             sense.draw_line(7, 0, 7, 7, 0, 255, 0, 0.1)
             sleep(0.5)
-            sense.draw_line(7, 7, 0, 7, 0, 0, 255, 0.1)
+            sense.draw_line(7, 7, 0, 7, 0, 0, 255, 0.1)  # Fehler: diese Linie wird von (0,0) nach (7,7) gezeichnet
             sleep(0.5)
-            sense.draw_line(0, 7, 0, 0, 255, 255, 0, 0.1)
+            sense.draw_line(0, 7, 0, 0, 255, 255, 0, 0.1)   # Fehler: diese Linie wird von (0,0) nach (0,7) gezeichnet
             print('... done')
             sleep(3)
 
@@ -256,14 +256,33 @@ def Test_draw_line(sense, do_test=True):
             print('... done')
             sleep(3)
 
+            print('     Blaues Plus....', end='')
             sense.clear()
+            sense.draw_line(0, 4, 7, 4, 0, 0, 255, 0.1)
+            sleep(0.5)
+            sense.draw_line(4, 0, 4, 7, 0, 0, 255, 0.1)
+            print('... done')
+            sleep(3)
+
+            print('     Gelbes fast Plus....', end='')
+            sense.clear()
+            sense.draw_line(0, 4, 7, 5, 255, 255, 0, 0.1)
+            sleep(0.5)
+            sense.draw_line(4, 0, 5, 7, 255, 255, 0, 0.1)
+            print('... done')
+            sleep(3)
+
+
+            sense.clear()
+
             sense.set_debug_mode = old_state
             
 
 if __name__ == '__main__':
     sense = MySenseHat()
+    sense.set_rotation(90)
     Test_set_pixel(sense, True)
-    # Test_draw_line(sense, True)
+    Test_draw_line(sense, True)
 
 
 
