@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>RaspberryPi - Web-Server</title>
+  </head>
+  <body>
+    <H1>RaspberryPi - Web-Server  (/var/www/index.html)</H1>
+	<H2>Hello world cgi-scripts</H2>
+	<UL>
+		<LI><A href="/cgi-bin/test.pl">Perl</A></LI>
+		<LI><A href="/cgi-bin/test.py">Python</A></LI>
+	</UL>
+	<H2>Simple cgi-scripts</H2>
+	<UL>
+		<LI><A href="/cgi-bin/hello.pl">Perl (shows hostname, IP-Adress,...)</A></LI>
+		<LI><A href="/cgi-bin/hello.py">Python </A></LI>
+	</UL>
+	
+	<H2>Perl advanced cgi-scripts</H2>
+	<UL>
+		<LI><A href="/cgi-bin/test_0.pl">Perl: (Importing CGI)</A></LI>
+        <LI><A href="/cgi-bin/test_1.pl">Perl: (Calling CGI)</A></LI>
+		<LI><A href="/cgi-bin/test_2.pl">Perl: (Calling CGI, littlePerlLib.pm)</A></LI>
+	</UL>
+	
+	<H2>Sense-HAT</H2>
+	<UL>
+		<LI><A href="/cgi-bin/test_sense_HAT.py">Python: greift auf Sense_HAT zu (Zeigt Temp an und loescht LEDs)</A></LI>
+		<LI><A href="/cgi-bin/test_CallScripts.pl">Perl: ruft ein Script in Documents auf (Ruft HAT_PixelTest.py [zeichnet ein ?] auf und liest dataLogger-file)</A></LI>
+	</UL>
+	
+	<H2>Pi-HAT</H2>
+	<UL>
+		<LI><A href="/cgi-bin/test_DAQC_HAT.py">Python: Importiert DAQC module and switchesOn all LEDs)</A></LI>
+		<LI><A href="/cgi-bin/thermometer.py">Python: Importiert DAQC module and shows Temp1 and Temp2)</A></LI>
+
+	</UL>
+	
+	<H2>References</H2>
+	<UL>
+		<LI><A href="apacheIndex.html">Original Apache-Index Page</A></LI>
+		<LI><A href="https://www.tutorialspoint.com/python3/python_cgi_programming.htm">CGI-Python programming</A></LI>
+		<LI><A target=_new href="https://stackoverflow.com/questions/3144089/expand-python-search-path-to-other-source">Find Python module</A></LI>
+	</UL>
+  </body>
+</html>
