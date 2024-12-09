@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Class_MySenseHat.py
 
 from sense_hat import SenseHat

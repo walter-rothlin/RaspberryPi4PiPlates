@@ -17,7 +17,7 @@
 # 08-Dec-2023   Walter Rothlin      draw_line() implemented (extends)
 # 23-Dec-2023   Walter Rothlin      Test_Framework implemented
 # 06-Dec-2023   Walter Rothlin      Refactoring for HFU PY2
-# 08-Dec-2023   Walter Rothlin      Added Test-Cases
+# 08-Dec-2023   Walter Rothlin      Added additonal Test-Cases
 # ------------------------------------------------------------------
 
 from sense_hat import SenseHat
