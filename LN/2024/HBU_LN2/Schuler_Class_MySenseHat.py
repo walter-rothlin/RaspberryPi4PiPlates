@@ -52,7 +52,7 @@ class MySenseHat(SenseHat):
             raise ValueError("Kann nicht konvertieren")
         
         dx = x_end - x_start
-        dy = y_end - y_start
+        dy = y_end - y_start 
         
         # Fall einer vertikalen Linie
         if dx == 0:
