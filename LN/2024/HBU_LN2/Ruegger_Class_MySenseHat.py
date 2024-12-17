@@ -92,6 +92,10 @@ if __name__ == '__main__':
     sense.draw_line(0, 0, 7, 4, green)
     sense.draw_line(0, 0, 3, 7, green)
 
+    sleep(2)
+    sense.clear()
+    sense.draw_line(0, 3, 7, 3, yellow)
+
 
 
 

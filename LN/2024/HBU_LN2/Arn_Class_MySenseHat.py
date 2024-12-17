@@ -35,5 +35,5 @@ if __name__ == "__main__":
     print("Test 2 bestanden: Koordinate außerhalb des Bereichs wird behandelt.")
 
     # Test 3: Dezimalzahlen
-    sense.set_pixel(2.7, 3.1, rot)
+    sense.set_pixel('2.7', 3.1, rot)
     print("Test 3 bestanden: Dezimalzahlen werden gerunde")

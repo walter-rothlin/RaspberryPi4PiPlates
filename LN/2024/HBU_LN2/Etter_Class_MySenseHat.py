@@ -86,6 +86,8 @@ if __name__ == "__main__":
     # Testprogramm
     my_sense = MySenseHat()
 
+    my_sense.clear()  # Matrix löschen
+    
     # Test 1: Pixel setzen
     print("Test: Einzelne Pixel setzen")
     my_sense.set_pixel(4, 5, 255, 0, 0)  # Rot (innerhalb der Matrix)

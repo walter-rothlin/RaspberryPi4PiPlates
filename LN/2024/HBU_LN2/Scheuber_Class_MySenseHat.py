@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from sense_hat import SenseHat
 import time
 
@@ -50,9 +52,12 @@ class MySenseHat(SenseHat):
         Methode um Linien zu zeichnen
         :param x_start: x-Kordinate optimal zwischen (0-7)
         :param y_start: y-Kordinate optimal zwischen (0-7)
+
         :param x_end: x-Kordinate optimal zwischen (0-7)
         :param y_end: y-Kordinate optimal zwischen (0-7)
+
         :param forground_color: optional tuple (r,g,b), ansonsten default_color
+        
         :param sleepTime: Zeit für das setzen einzelner Pixel
         """
         if abs(x_start-x_end) > abs(y_start-y_end):
@@ -60,7 +65,7 @@ class MySenseHat(SenseHat):
             value_list = self.__calculatPoints(x_end,x_start)
             liste_points = self.__calculateXY(x_start,y_start,value_list,gradient_y)
         else:
-            gradient_x = (x_end-x_start)/(abs)(y_end-y_start)
+            gradient_x = (x_end-x_start)/abs(y_end-y_start)
             value_list = self.__calculatPoints(y_end,y_start) 
             liste_points = self.__calculateXY(x_start,y_start,value_list,gradient_x,False)
 
@@ -71,7 +76,7 @@ class MySenseHat(SenseHat):
     def __calculatPoints (self,end,start):
         """
         Methode gibt eine Liste von Werten, abhängig von den Start und Endpunkten zurück
-        :param end: start der Linie
+        :param end  : start der Linie
         :param start: ende der Linie
         """
         value_list=[]
@@ -88,8 +93,8 @@ class MySenseHat(SenseHat):
         Methode gibt eine Liste von Werten, abhängig von den Start und Endpunkten zurück
         :param x_start: start der x-Kordinate
         :param y_start: start der y-Kordinate
-        :param valueList: Liste von zwischen Werten
-        :param gradient: Steigung der Linie
+        :param valueList: Liste von Zwischenwerten
+        :param gradient : Steigung der Geraden
         :param calculateY: Berechnung der Y = True (Berechnung Y auf Basis X)
         """
         calculation = 0

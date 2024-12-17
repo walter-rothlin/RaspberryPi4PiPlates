@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from sense_hat import SenseHat
 
 class MySenseHat(SenseHat):
@@ -37,6 +39,7 @@ class MySenseHat(SenseHat):
   
 hat = MySenseHat()
 hat.low_light = True
+hat.clear()
 
 #Test 1: Setzen Sie über dieses Objekt das Pixel mit x=4, y=5 auf rot 
 hat.set_pixel(4,5,255,0,0)
