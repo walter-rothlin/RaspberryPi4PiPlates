@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 
 from flask import *
-from sense_hat import SenseHat
-from time import sleep
-from Class_senseHat import *
+from Class_MySenseHat import *
 
 red   = (255,   0,   0)
 blue  = (  0,   0, 255)
@@ -56,11 +54,30 @@ def clear_LED():
         sense.clear(green)   
     return f'Clear LED matrix to color {bg_color}!'
 
+@app.route('/show_message', methods=['GET'])
+def show_message():
+    all_get_parameters = dict(request.args.items())
+    print(all_get_parameters)
+    text_to_show = all_get_parameters.get('text_string', 'Nothing')
+    scroll_speed = float(all_get_parameters.get('scroll_speed', '0.1'))
+    sense.show_message(text_to_show, scroll_speed=scroll_speed)  
+    return f'text_string("{text_to_show}", scroll_speed={scroll_speed})!'
+
+@app.route('/set_rotation', methods=['GET'])
+def set_rotation():
+    all_get_parameters = dict(request.args.items())
+    print(all_get_parameters)
+    r = int(all_get_parameters.get('r', '90'))
+    redraw = bool(all_get_parameters.get('redraw', 'True'))
+    sense.set_rotation(r=r, redraw=redraw)  
+    return f'set_rotation({r}, redraw={redraw})!'
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
     
-    app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5001)
+    # app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5001)
     # app.run(debug=True, host='192.168.107.126', port=5001)
+    app.run(debug=True, host='192.168.1.137', port=5001)

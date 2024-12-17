@@ -94,6 +94,11 @@ class MySenseHat(SenseHat):
     # Business Methods
     # ================    
     def set_pixel_Djordje(self, x, y, *args, **kwargs):
+        '''
+        Overwrites the set_pixel() method from the SenseHat class.
+        :param x: x-coordinate (0-7)
+        :param y: y-coordinate (0-7)
+        '''
         print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel_Djordje(self, x={x}, y={y})')) 
         try:
             x = round(float(x))
