@@ -12,6 +12,7 @@
 # History:
 # 17-Dec-2024   Walter Rothlin      Initial Version
 # 18-Dec-2024   Walter Rothlin      Added show_message(), set_rotation(), show_letter(), low_light()
+# 19-Dec-2024   Walter Rothlin      Added clear_LED()
 # ------------------------------------------------------------------
 version = "01.00.03"
 
