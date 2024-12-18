@@ -2,7 +2,7 @@
 
 # ------------------------------------------------------------------
 # Name  : 01_MySenseHat_Flask.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/LN/2024/HBU_MLZ/Rothlin_Walter/01_MySenseHat_Flask.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/LN/2024/HBU_MLZ/Rothlin_Walter/01_MySenseHat_Flask.py
 #
 # Description: Sub-Class of SenseHat
 #
@@ -13,7 +13,7 @@
 # 17-Dec-2024   Walter Rothlin      Initial Version
 # 18-Dec-2024   Walter Rothlin      Added show_message(), set_rotation(), show_letter(), low_light()
 # ------------------------------------------------------------------
-version = "01.00.02"
+version = "01.00.03"
 
 from flask import *
 from Class_MySenseHat import *
