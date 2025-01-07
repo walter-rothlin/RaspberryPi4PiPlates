@@ -14,17 +14,47 @@
 #
 # History:
 # 18-Dec-2024   Walter Rothlin      Initial Version
+# 07-Jan-2025   Walter Rothlin      Added TestForms for all functions
 # ------------------------------------------------------------------
 -->
 <title>MySensHat</title>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        margin: 30px; /* Add space around the entire page */
+    }
+    .content {
+        padding: 20px; /* Add inner spacing */
+    }
+</style>
+
 </head>
 
 <body>
-<H1>Testresult: {{ test_result_string }}</H1>
+    <div class="content">
+        <p>
+            BACK TO <a href="/" class="btn btn-primary btn-sm">Home</a>
+        </p>
+        <H2>{{ called_end_point }} has been called</H2>
+        <!-- parameters: {{ parameters }}<br/> -->
 
-
-
-<H2>Test-Endpoints</H2>
+        <form action="/{{ called_end_point }}" method="get">
+            {{ called_end_point }}(
+            {% for key, value in parameters.items() %}
+                <label for="{{ key }}">{{ key }}=</label>
+                <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                {% if not loop.last %}, {% endif %}
+            {% endfor %}
+            )
+            <input type="submit" value="Test">
+        </form>
+        <br/>
+        <H2>Testresult: {{ test_result_string }}</H2>
+    </div>
 </body>
 </html>
 
