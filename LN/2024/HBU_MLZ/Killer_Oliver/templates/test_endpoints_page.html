@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>test_endpoints_page</title>
+    <style>
+        h1 {
+            white-space: pre-line; 
+        }
+    </style>
+</head>
+
+<body>
+<h1>{{test_result_string}}</h1>
+<br/>
+<br/>
+<h2>Clear LED</h2>
+<form action="clear_LED" method="POST">
+    <select name = "color">
+        {% for color in colors %}
+            <option value="{{ color }}">{{ color }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Change">
+</form>
+<br/>
+<br/>
+<h2>Set Rotation</h2>
+<form action="set_rotation" method="POST">
+    <select name = "r">
+        <option value="0">0</option>
+        <option value="90">90</option>
+        <option value="180">180</option>
+        <option value="270">270</option>
+    </select>
+    <input type="submit" value="Change">
+</form>
+<br/>
+<br/>
+<form action="/" method="get">
+    <button type="submit">Back to Home</button>
+</form>
+</body>
+
+</html>

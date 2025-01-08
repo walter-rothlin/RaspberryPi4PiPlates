@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+# ------------------------------------------------------------------
+# Name  : test_endpoints_page.html
+#
+# Description: Test-Web-Page for the Sense-HAT
+#
+#
+# Autor: Patrick Landert
+#
+# History:
+# 07-Jan-2025   Patrick Landert     MLZ PY2, Initial Version
+# ------------------------------------------------------------------
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Endpoints</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Test Endpoints</h1>
+
+        <!-- Ergebnisanzeige -->
+        <div class="alert alert-info" role="alert">
+            {{ test_result_string }}
+        </div>
+
+        <!-- Testformulare -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">Clear LED</div>
+            <div class="card-body">
+                <form action="/clear_LED" method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="color" class="form-label">Farbe</label>
+                        <input type="text" class="form-control" id="color" name="color" placeholder="black, red, blue">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Testen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">Show Message</div>
+            <div class="card-body">
+                <form action="/show_message" method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="text_string" class="form-label">Text</label>
+                        <input type="text" class="form-control" id="text_string" name="text_string" placeholder="Hello World">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="scroll_speed" class="form-label">Scroll-Geschwindigkeit</label>
+                        <input type="number" step="0.01" class="form-control" id="scroll_speed" name="scroll_speed" placeholder="0.1">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="text_colour" class="form-label">Textfarbe (R,G,B)</label>
+                        <input type="text" class="form-control" id="text_colour" name="text_colour" placeholder="255,255,255">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="back_colour" class="form-label">Hintergrundfarbe (R,G,B)</label>
+                        <input type="text" class="form-control" id="back_colour" name="back_colour" placeholder="0,0,0">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success">Testen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-white">Set Rotation</div>
+            <div class="card-body">
+                <form action="/set_rotation" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="r" class="form-label">Rotation</label>
+                        <input type="number" class="form-control" id="r" name="r" placeholder="0, 90, 180, 270">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="redraw" class="form-label">Redraw</label>
+                        <select id="redraw" name="redraw" class="form-select">
+                            <option value="True">True</option>
+                            <option value="False">False</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-warning">Testen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">Show Letter</div>
+            <div class="card-body">
+                <form action="/show_letter" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="s" class="form-label">Buchstabe</label>
+                        <input type="text" class="form-control" id="s" name="s" maxlength="1" placeholder="?">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="text_colour" class="form-label">Textfarbe (R,G,B)</label>
+                        <input type="text" class="form-control" id="text_colour" name="text_colour" placeholder="0,255,0">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="back_colour" class="form-label">Hintergrundfarbe (R,G,B)</label>
+                        <input type="text" class="form-control" id="back_colour" name="back_colour" placeholder="100,100,100">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-danger">Testen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">Low Light</div>
+            <div class="card-body">
+                <form action="/low_light" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="low_light_val" class="form-label">Low Light</label>
+                        <select id="low_light_val" name="low_light_val" class="form-select">
+                            <option value="True">True</option>
+                            <option value="False">False</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-secondary">Testen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
