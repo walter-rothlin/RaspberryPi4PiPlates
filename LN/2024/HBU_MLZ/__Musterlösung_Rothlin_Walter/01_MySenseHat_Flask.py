@@ -15,7 +15,10 @@
 # 19-Dec-2024   Walter Rothlin      Added clear_LED()
 # 07-Jan-2025   Walter Rothlin      Added TestForms for all functions
 # ------------------------------------------------------------------
-version = "Walter Rothlin V1.0"
+version = "Walter Rothlin V1.1"
+
+import sys
+sys.path.append('/home/pi/RaspberryPi4PiPlates/My_Packages')  
 
 from flask import *
 from Class_MySenseHat import *
@@ -59,17 +62,19 @@ def clear_LED():
     print(all_get_parameters)
     bg_color = all_get_parameters.get('color', 'black')
     if bg_color == 'black':
-        sense.clear(MySenseHat.black)
+        sense.clear(rgb_to_colorHex(MySenseHat.black))
     elif bg_color == 'red':
-        sense.clear(MySenseHat.red) 
+        sense.clear(rgb_to_colorHex(MySenseHat.red)) 
     elif bg_color == 'blue':
-        sense.clear(MySenseHat.blue)
+        sense.clear(rgb_to_colorHex(MySenseHat.blue))
     elif bg_color == 'green':
-        sense.clear(MySenseHat.green)
+        sense.clear(rgb_to_colorHex(MySenseHat.green))
     elif bg_color == 'white':
-        sense.clear(MySenseHat.white) 
+        sense.clear(rgb_to_colorHex(MySenseHat.white)) 
     elif bg_color == 'grey':
-        sense.clear(MySenseHat.grey)
+        sense.clear(rgb_to_colorHex(MySenseHat.grey))
+    else:
+        sense.clear(bg_color)
     return render_template('test_endpoints_page.html', test_result_string=f'Clear LED matrix to color {bg_color}!', called_end_point='clear_LED', parameters=all_get_parameters)
 
 @app.route('/show_message', methods=['GET'])

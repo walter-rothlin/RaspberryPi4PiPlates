@@ -52,6 +52,85 @@ def print_if_not_empty(message):
     if message != '':
         print(message)
 
+
+def colorHex_to_rgb(color):
+    """
+    Converts a hexadecimal color string to an RGB tuple in decimal.
+    If the input is already a tuple, it returns the tuple unchanged.
+
+    Parameters:
+        color (str or tuple): Hexadecimal color string (e.g., '#FF5733' or 'FF5733')
+                              or an RGB tuple (e.g., (255, 87, 51)).
+
+    Returns:
+        tuple: A tuple (R, G, B) where R, G, and B are integers from 0 to 255.
+    """
+    # If color is already a tuple, return it as-is
+    if isinstance(color, tuple):
+        if len(color) == 3 and all(isinstance(c, int) and 0 <= c <= 255 for c in color):
+            return color
+        else:
+            raise ValueError("Invalid RGB tuple. Must have three integers between 0 and 255.")
+    
+    # Remove '#' if present for a hex string
+    if isinstance(color, str):
+        color = color.lstrip('#')
+        
+        # Ensure the hex color has exactly 6 characters
+        if len(color) != 6:
+            raise ValueError("Hex color must be 6 characters long.")
+        
+        # Convert hex to decimal
+        r = int(color[0:2], 16)
+        g = int(color[2:4], 16)
+        b = int(color[4:6], 16)
+        
+        return (r, g, b)
+    
+    # If the input is neither a string nor a tuple, raise an error
+    raise TypeError("Color must be a hex string or an RGB tuple.")
+
+
+def rgb_to_colorHex(color):
+    """
+    Converts an RGB tuple in decimal to a hexadecimal color string.
+    If the input is already a valid hex string, it returns it directly.
+
+    Parameters:
+        color (tuple or str): Either an RGB tuple (R, G, B) where R, G, and B 
+                              are integers from 0 to 255, or a hexadecimal color 
+                              string (e.g., '#FF5733' or 'FF5733').
+
+    Returns:
+        str: Hexadecimal color string (e.g., '#FF5733').
+    """
+    # If input is a hex string, validate and return it directly
+    if isinstance(color, str):
+        color = color.lstrip('#')
+        if len(color) == 6 and all(c in '0123456789ABCDEFabcdef' for c in color):
+            return f"#{color.upper()}"
+        else:
+            raise ValueError("Invalid hexadecimal color string.")
+
+    # If input is a tuple, process it as an RGB color
+    elif isinstance(color, tuple):
+        # Ensure the input is a tuple with exactly three components
+        if len(color) != 3:
+            raise TypeError("RGB input must be a tuple with three elements (R, G, B).")
+        
+        # Ensure each color component is within the valid range
+        for c in color:
+            if not (isinstance(c, int) and 0 <= c <= 255):
+                raise ValueError("RGB values must be integers between 0 and 255.")
+        
+        # Convert RGB to hex
+        return "#{:02X}{:02X}{:02X}".format(color[0], color[1], color[2])
+
+    # If input is neither a hex string nor a tuple, raise an error
+    else:
+        raise TypeError("Input must be a hex string or an RGB tuple.")
+
+
 class MySenseHat(SenseHat):
     '''
     A subclass from SenseHat where set_pixel() has been overwritten and draw_line() added.
@@ -92,7 +171,20 @@ class MySenseHat(SenseHat):
 
 
     # Business Methods
-    # ================    
+    # ================
+    def clear(self, *args, **kwargs):
+        print(f'clear({args}, {kwargs})')
+        bg_color = self.__default_bg_color
+        if args is not None and len(args) == 1:
+            bg_color = args[0]
+            bg_color = colorHex_to_rgb(bg_color)
+            print(f'1) {args}  -->  {bg_color}')
+        elif args is not None and len(args) == 3:
+            bg_color = args
+            print(f'2) {args}  -->  {bg_color}')
+        super().clear(bg_color)
+
+
     def set_pixel_Djordje(self, x, y, *args, **kwargs):
         '''
         Overwrites the set_pixel() method from the SenseHat class.

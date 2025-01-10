@@ -13,7 +13,7 @@ green = (  0, 255,   0)
 black = (  0,   0,   0)
 
 # Definieren Sie im Flask-Programm noch folgende Variable version='Ihr Voname Nachname' ein und übergeben dies der render_template('index.html)
-version = 'Janik Hoffmann'
+version = 'Janik Hoffmann V1.0'
 
 app = Flask(__name__)
 sense = MySenseHat()
@@ -98,7 +98,7 @@ def set_rotation():
     if redraw_text == 'False':
         redraw = False
     
-    #sense.set_rotation(rotation_degree)
+    sense.set_rotation(rotation_degree)
     #Testausgabe
     result_string = f'sense.set_rotation({rotation_degree})'
     
@@ -116,7 +116,7 @@ def show_letter():
     back_colour = all_get_parameters.get('back_colour', '(0,0,0)')
     back_colour_tupel = tuple(map(int, back_colour.strip('()').split(',')))
 
-    #sense.show_letter(letter, text_colour=text_colour_tupel, back_colour=back_colour_tupel)
+    sense.show_letter(letter, text_colour=text_colour_tupel, back_colour=back_colour_tupel)
 
     #Testausgabe
     result_string = f'sense.show_letter("{letter}", text_colour={text_colour_tupel}, back_colour={back_colour_tupel})'

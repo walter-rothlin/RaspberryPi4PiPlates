@@ -68,7 +68,7 @@ def clear_LED():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', version='5.0.0.2') # WR changed it
 #new
 @app.route('/show_message', methods=['GET'])
 def show_message():
@@ -107,5 +107,5 @@ if __name__ == '__main__':
     # app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5001)
     # app.run(debug=True, host='192.168.107.126', port=5001)
 
-    app.run(debug=True, host='192.168.0.94', port=5001)
+    app.run(debug=True, host='127.0.0.0', port=5001)
 

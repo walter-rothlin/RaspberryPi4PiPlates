@@ -24,36 +24,63 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <style>
-    body {
-        margin: 30px; /* Add space around the entire page */
-    }
-    .content {
-        padding: 20px; /* Add inner spacing */
-    }
+        body {
+            background-color: #f4f4f4;
+        }
+        .result {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            margin-top: 30px;
+        }
+
+        .short-input {
+            width: 80px;
+        }
+
+        .long-input {
+            width: 200px;
+        }
 </style>
 
 </head>
 
 <body>
-    <div class="content">
-        <p>
-            BACK TO <a href="/" class="btn btn-primary btn-sm">Home</a>
-        </p>
-        <H2>{{ called_end_point }} has been called</H2>
-        <!-- parameters: {{ parameters }}<br/> -->
+    <div class="container"">
+        <a href="/" class="btn btn-primary btn-sm">Home</a>
+        <h1 class="text-center my-4">Test-Endpunkte für MySense-HAT</h1>
+
+        <!-- Result section -->
+        <div class="result">
+            <strong>Ergebnis:</strong> {{ test_result_string }}
+        </div>
+
+        <hr>
+            
 
         <form action="/{{ called_end_point }}" method="get">
             {{ called_end_point }}(
             {% for key, value in parameters.items() %}
                 <label for="{{ key }}">{{ key }}=</label>
-                <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                {% if key == "color" %}
+                    <input type="color" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                {% elif key == "text_string" %}
+                    <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}" class="long-input">
+                {% else %}
+                    <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}" class="short-input">
+                {% endif %}
+
+                <!-- <input type="number" id="{{ key }}" name="{{ key }}" min="0" max="270" step="90" class="form-control"> -->
                 {% if not loop.last %}, {% endif %}
             {% endfor %}
             )
             <input type="submit" value="Test">
         </form>
-        <br/>
-        <H2>Testresult: {{ test_result_string }}</H2>
     </div>
 </body>
 </html>
