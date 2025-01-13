@@ -130,4 +130,5 @@ def low_light():
     return render_template('mlz_test_endpoints_page.html', result_string=result_string, endpoint='low_light')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='gooseberry.local', port=8080)
+    # app.run(debug=True, host='gooseberry.local', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=5002)

@@ -6,7 +6,7 @@ import json
 app = Flask(__name__)
 sense = MySenseHat()
 
-version = "Stefan Scheuber V1.0.0"
+version = "Stefan Scheuber V1.0.1"
 
 red   = (255,   0,   0)
 blue  = (  0,   0, 255)
@@ -222,4 +222,5 @@ def check_and_truncate(string):
 
 if __name__ == '__main__':
     #app.run(debug=True, host='raspStefan', port=5002)
-    app.run(debug=True, host='192.168.1.33', port=5003)
+    #app.run(debug=True, host='192.168.1.33', port=5003)
+    app.run(debug=True, host='0.0.0.0', port=5002)
