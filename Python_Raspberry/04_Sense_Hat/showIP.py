@@ -135,6 +135,7 @@ while do_loop:
                 sense.show_message("YES", scroll_speed=0.08, text_colour=[0, 255, 0])
                 draw_sanduhr()
                 clone_them()
+                sense.clear()
             else:
                 sense.show_message("NO", scroll_speed=0.08, text_colour=[255, 0, 0])
                     
