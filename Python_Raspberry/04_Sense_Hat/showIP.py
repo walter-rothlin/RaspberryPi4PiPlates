@@ -4,11 +4,12 @@
 # Name: showIP.py
 #
 # Description: Zeigt IP Adresse auf dem SenseHat
+# https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/showIP.py
 #
 # Autor: Walter Rothlin
 # For Autostart:
 #    crontab -e
-#    @reboot /usr/bin/python3 ~/bin/showIP.py
+#    @reboot /usr/bin/python3 ~/bin/showIP.py &> /dev/null &
 #
 # History:
 # 18-Jun-2024   Walter Rothlin      Initial Version

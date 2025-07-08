@@ -2,6 +2,7 @@
 
 # ------------------------------------------------------------------
 # Name: clone-repo.py
+# https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/clone_repo.py
 #
 # Description: Erstellt einen lokalen Clone eines Git repositories
 #
