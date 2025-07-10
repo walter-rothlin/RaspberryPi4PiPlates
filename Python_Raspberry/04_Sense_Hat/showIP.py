@@ -33,7 +33,7 @@ white    = [255, 255, 255]
 grey     = [100, 100, 100]
 
 
-def draw_question_mark(fg_color=red, bg_color=black):
+def draw_question_mark(fg_color=yellow, bg_color=black):
     X = fg_color
     _ = bg_color
 
@@ -98,7 +98,7 @@ def get_date_time_str(with_date=True, with_time=True):
     
 
 def get_yes_no(promt):
-    sense.show_message(str(promt), scroll_speed=0.08, text_colour=[255, 0, 0])
+    sense.show_message(str(promt), scroll_speed=0.08, text_colour=[255, 255, 0])
     event = sense.stick.wait_for_event(emptybuffer=True)
     if event.action == "pressed":
         if event.direction == "middle":
@@ -113,7 +113,7 @@ sense = SenseHat()
 
 
 sense.clear()
-sense.show_message("Connecting to WiFi....", text_colour=red)
+sense.show_message("V1.0 Connecting to WiFi....", text_colour=red)
 
 
 do_loop = True
