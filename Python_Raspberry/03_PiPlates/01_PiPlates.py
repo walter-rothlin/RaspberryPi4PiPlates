@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # ------------------------------------------------------------------
-# Source: https://raw.githubusercontent.com/walter-rothlin/Source-Code/master/Python_Raspberry/03_PiPlates/01_PiPlates.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/01_PiPlates.py
 #
 # Description: Test Script for PiPlates
 #
@@ -17,6 +17,22 @@
 # 30-Nov-2024   Walter Rothlin      Initial Version
 # ------------------------------------------------------------------
 import piplates.DAQCplate                       as DAQC
-import piplates.RELAYplate                      as RELAY
+import piplates.RELAYplate                      as Relay
+import time
 
-print('Hello')
+PLATE_ADDRESS = 0
+
+print(f"Testing Plate on address {PLATE_ADDRESS}")
+# Relay control
+for i in range(1,8):
+    Relay.relayON(PLATE_ADDRESS,i)
+    print(f"Relay ON: {PLATE_ADDRESS}, {i}")
+    time.sleep(1)
+
+for i in range(1,8):
+    Relay.relayOFF(PLATE_ADDRESS,i)
+    print(f"Relay OFF: {PLATE_ADDRESS}, {i}")
+    time.sleep(1)
+
+
+print("Done")
