@@ -3,7 +3,7 @@
 HOME_DIR="$HOME"
 BIN_DIR="$HOME_DIR/bin"
 
-TARGET_REPO="/home/pi-u05/Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry/04_Sense_Hat"
+TARGET_REPO="../Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry/04_Sense_Hat"
 CLONE_REPO_SRC="$TARGET_REPO/clone_repo.py"
 SHOWIP_SRC="$TARGET_REPO/showIP.py"
 
