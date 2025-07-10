@@ -10,6 +10,7 @@
 #
 # History:
 # 08-Jul-2025   Walter Rothlin      Initial Version
+# 10-Jul-2025   Walter Rothlin      delete clone first and set chmod 755 after cloning
 # ------------------------------------------------------------------
 import subprocess
 import os
@@ -24,26 +25,34 @@ def clone_github_repo(repo_url, clone_dir):
         print("❌ Fehler: Es wurde keine Repository-URL angegeben.")
         return
 
-    # Zielordner vorbereiten
-    repo_name = os.path.splitext(os.path.basename(repo_url))[0]
-    target_path = os.path.join(clone_dir, repo_name)
+    # Zielverzeichnis vorbereiten
+    if os.path.exists(clone_dir):
+        print(f"🧹 Entferne komplettes Zielverzeichnis: {clone_dir}")
+        shutil.rmtree(clone_dir)
 
-    # Wenn das Verzeichnis bereits existiert, löschen
-    if os.path.exists(target_path):
-        print(f"🧹 Entferne vorhandenes Verzeichnis: {target_path}")
-        shutil.rmtree(target_path)
-
-    # Sicherstellen, dass das übergeordnete Verzeichnis existiert
     os.makedirs(clone_dir, exist_ok=True)
 
-    # Klonen
     try:
         print(f"🔄 Klone Repository von: {repo_url}")
         subprocess.run(["git", "clone", repo_url], cwd=clone_dir, check=True)
-        print("✅ Repository erfolgreich geklont.\n")
+        print("✅ Repository erfolgreich geklont.")
+
+        # Repository-Ordnername bestimmen (z.B. "RaspberryPi4PiPlates")
+        repo_name = os.path.splitext(os.path.basename(repo_url))[0]
+        target_path = os.path.join(clone_dir, repo_name)
+
+        # .py-Dateien chmod 755 setzen
+        for root, dirs, files in os.walk(target_path):
+            for file in files:
+                if file.endswith('.py'):
+                    file_path = os.path.join(root, file)
+                    os.chmod(file_path, 0o755)
+                    print(f"🔧 Setze chmod 755 für: {file_path}")
+
     except subprocess.CalledProcessError as e:
         print("❌ Fehler beim Klonen des Repositories:")
         print(e)
+
 
 def clone_repos(clone_liste):
     for repo_url, zielverzeichnis in clone_liste.items():
@@ -55,3 +64,4 @@ def clone_them():
 
 if __name__ == "__main__":
     clone_them()
+
