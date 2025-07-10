@@ -17,7 +17,7 @@ import os
 import shutil
 
 clone_liste = {
-    "https://github.com/walter-rothlin/RaspberryPi4PiPlates": "../Waltis_Repo_Clone",
+    "https://github.com/walter-rothlin/RaspberryPi4PiPlates": "Waltis_Repo_Clone",
 }
 
 def clone_github_repo(repo_url, clone_dir):
