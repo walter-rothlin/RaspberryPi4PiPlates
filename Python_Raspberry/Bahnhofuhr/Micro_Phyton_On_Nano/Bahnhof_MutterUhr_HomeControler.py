@@ -2,12 +2,13 @@
 # Name  : Bahnhof_MutterUhr_HomeControler.py
 #
 # Description: REST-Enpoints for Relais Steuerung
-# Source: https://raw.githubusercontent.com/walter-rothlin/Source-Code/master/Python_Micro_For_RPi_Pico/Bahnhof_MutterUhr_HomeControler.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/Bahnhofuhr/Micro_Python_On_Nano/Bahnhof_MutterUhr_HomeControler.py
 #
 # Autor: Walter Rothlin
 #
 # History:
 # 29-Dec-2024   Walter Rothlin      Initial Version with new board from Tobias
+# 03-Aug-2025   Walter Rothlin      Move to another repository
 # ------------------------------------------------------------------
 from HomeController import HomeController
 from machine import Pin, UART, Timer, RTC

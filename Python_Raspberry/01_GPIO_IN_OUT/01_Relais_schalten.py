@@ -27,7 +27,7 @@ GPIO.setup(17, GPIO.OUT)  # Nutzt GPIO17 => physisch Pin 11
 
 
 GPIO.setmode(GPIO.BCM)          # Verwende das physische Pin-Layout (BOARD) oder BCM (GPIO-Nummer)
-RELAY_PIN = 17                  # Pin-Nummer, an dem das Relais angeschlossen ist
+RELAY_PIN = 17                  # GPIO-Nummer, an dem das Relais angeschlossen ist
 GPIO.setup(RELAY_PIN, GPIO.OUT) # GPIO vorbereiten
 
 # Relais einschalten (je nach Modul LOW oder HIGH – hier gehen wir von LOW-Aktiv aus)
