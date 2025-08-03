@@ -7,5 +7,5 @@
 # Autor: Walter Rothlin
 #
 # History:
-# 03-Aug-2025   Walter Rothlin      Initial Version based on 
+# 03-Aug-2025   Walter Rothlin      Initial Version based on https://raw.githubusercontent.com/walter-rothlin/Source-Code/master/Python_WaltisExamples/Code_02_BasicPython/pythonBasics_08j_repeating_timer_REST_Controlled.py
 # ------------------------------------------------------------------
