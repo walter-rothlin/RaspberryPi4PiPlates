@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 # ------------------------------------------------------------------
-# Name  : 01_GPIO_Out.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/01_GPIO_LED_and_Switch_Pi/01_GPIO_Out.py
+# Name  : 02_GPIO_In.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/01_GPIO_IN_OUT/02_GPIO_In.py
 #
 # Description: GPIO simple
 #
@@ -12,24 +12,21 @@
 # Autor: Walter Rothlin
 #
 # History:
-# 05-Dec-2023   Dylan Egger      Initial Version
-# 09-Dec-2023   Walter Rothlin   Integrated in Moodle course
+# 05-Dec-2023   Dylan Egger       Initial Version
+# 09-Dec-2023   Walter Rothlin    Integrated in Moodle course
 # 03-Aug-2025   Walter Rothlin    Moved to seperate Repository
 #
 # ------------------------------------------------------------------
 
-import time
+# import
 import RPi.GPIO as GPIO
 
 #gpio setup
 GPIO.setmode(GPIO.BCM) # sagt welcher gpio modus gebraucht wird
 GPIO.setwarnings(False)
 
-GPIO.setup(3, GPIO.OUT) # definiert gpio pin 3 als output
+GPIO.setup(2, GPIO.IN) # definiert gpio pin 2 als input
 
 #loop
 while True:
-    GPIO.output(3, GPIO.HIGH) # setzt pin 3 auf HIGH also 3.3v
-    time.sleep(1)             # wartet 1s
-    GPIO.output(3, GPIO.LOW)  # setzt pin 3 auf LOW also 0v
-    time.sleep(1)             # wartet 1s
+    print(GPIO.input(2)) # druckt den aktuellen Wert von pin 2 ins terminal
