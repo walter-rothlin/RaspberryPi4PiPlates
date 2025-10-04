@@ -66,6 +66,7 @@ def index():
 
 
 if __name__ == '__main__':
-    # app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5001)
+    # app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5002)
+    # app.run(debug=True, host='192.168.1.137', port=5002)
 
-    app.run(debug=True, host='192.168.1.137', port=5001)
+    app.run(debug=True, host='127.0.0.1', port=5002)
