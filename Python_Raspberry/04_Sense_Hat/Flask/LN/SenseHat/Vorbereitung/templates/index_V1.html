@@ -9,12 +9,34 @@
     <H1>Index V2.0</H1>
 
     <a href="/">Home</a><br/>
-    <H2>Clear</H2>
-    <a href="/clear_LED?color=blue">Clear_LED to blue</a><br/>
-    <H2>Status</H2>
-    <a href="/get_status">Get Sense_Hat status</a><br/>
-    <H2>Set Pixel</H2>
-    <a href="/set_pixel?x=2&y=4&r=255&g=255&b=0">set_pixel(2,4,255,255,0)</a><br/>
-    <a href="/set_pixel?x=0&y=0&r=255&g=0&b=0">set_pixel(0,0,255,0,0)</a><br/>
+    <H3>Status</H3>
+    <a href="/get_status">/get_status</a> Get Sense_Hat status<br/>
+
+
+    <H3>Clear</H3>
+    <table>
+        <tr>
+            <td><a href="/clear_LED">/clear_LED</a></td>
+            <td>Clear_LED to black</td>
+        </tr>
+        <tr>
+            <td><a href="/clear_LED?color=blue">/clear_LED?color=blue</a></td>
+            <td>Clear_LED to blue</td>
+        </tr>
+
+    </table>
+	<br/>
+
+    <H3>Set Pixel</H3>
+    <table>
+        <tr>
+            <td><a href="/set_pixel?x=2&y=4&r=255&g=255&b=0">/set_pixel?x=2&y=4&r=255&g=255&b=0</a></td>
+            <td>set_pixel(2,4,255,255,0)</td>
+        </tr>
+        <tr>
+            <td><a href="/set_pixel?x=0&y=0&r=255&g=0&b=0"">/set_pixel?x=0&y=0&r=255&g=0&b=0</a></td>
+            <td>set_pixel(0,0,255,0,0)</td>
+        </tr>
+    </table>
 </body>
 </html>

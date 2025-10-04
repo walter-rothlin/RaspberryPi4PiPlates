@@ -1,6 +1,18 @@
 #!/usr/bin/python3
 
-# https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/Flask/LN/SenseHat/Vorbereitung/01_SenseHat_Flask.py
+# ------------------------------------------------------------------
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/Flask/LN/SenseHat/Vorbereitung/01_SenseHat_Flask.py
+#
+# Description: Ausgangslage für REST Services für den Sense-Hat
+
+#
+#
+# Autor: Walter Rothlin
+#
+# History:
+# 01-Jul-2025  Walter Rothlin      Initial Version
+# 04-Oct-2025  Walter Rothlin      Prepared for HBU MLZ 2025
+# ------------------------------------------------------------------
 
 from flask import *
 from sense_hat import SenseHat
@@ -13,20 +25,6 @@ black = (0, 0, 0)
 
 app = Flask(__name__)
 sense = SenseHat()
-
-
-@app.route('/set_pixel', methods=['GET'])
-def set_pixel():
-    all_get_parameters = dict(request.args.items())
-    print(all_get_parameters)
-    x = int(all_get_parameters.get('x', '0'))
-    y = int(all_get_parameters.get('y', '0'))
-    r = int(all_get_parameters.get('r', '0'))
-    g = int(all_get_parameters.get('g', '0'))
-    b = int(all_get_parameters.get('b', '0'))
-
-    sense.set_pixel(x, y, r, g, b)
-    return f'set_pixel({x},{y},{r},{g},{b})!'
 
 
 @app.route('/get_status', methods=['GET'])
@@ -57,7 +55,21 @@ def clear_LED():
         sense.clear(blue)
     elif bg_color == 'green':
         sense.clear(green)
-    return f'Clear LED matrix to color {bg_color}!'
+    return f'Clear LED matrix to color {bg_color}!<br/><br/><a href="/">Back</a>'
+
+
+@app.route('/set_pixel', methods=['GET'])
+def set_pixel():
+    all_get_parameters = dict(request.args.items())
+    print(all_get_parameters)
+    x = int(all_get_parameters.get('x', '0'))
+    y = int(all_get_parameters.get('y', '0'))
+    r = int(all_get_parameters.get('r', '0'))
+    g = int(all_get_parameters.get('g', '0'))
+    b = int(all_get_parameters.get('b', '0'))
+
+    sense.set_pixel(x, y, r, g, b)
+    return f'set_pixel({x},{y},{r},{g},{b})!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/')

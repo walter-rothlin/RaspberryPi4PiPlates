@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Sense HAT REST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        a, button {
+            margin: 5px 0;
+            display: inline-block;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        a:hover, button:hover {
+            background: #0056b3;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .form-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        label {
+            display: block;
+            margin: 6px 0 3px;
+        }
+        input {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script>
+        function setPixel(event) {
+            event.preventDefault();
+            const x = document.getElementById("x").value;
+            const y = document.getElementById("y").value;
+            const r = document.getElementById("r").value;
+            const g = document.getElementById("g").value;
+            const b = document.getElementById("b").value;
+            const url = `/set_pixel?x=${x}&y=${y}&r=${r}&g=${g}&b=${b}`;
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <h1>Sense HAT Steuerung V3.0</h1>
+
+    <div class="section">
+        <a href="/">🏠 Home</a>
+    </div>
+
+    <div class="section">
+        <h3>Clear</h3>
+        <a href="/clear_LED?color=blue">Clear LED → Blau</a>
+        <a href="/clear_LED">Clear LED → Schwarz</a>
+    </div>
+
+    <div class="section">
+        <h3>Status</h3>
+        <a href="/get_status">Sense HAT Status abrufen</a>
+    </div>
+
+    <div class="section">
+        <h3>Pixel setzen</h3>
+        <div class="form-box">
+            <form onsubmit="setPixel(event)">
+                <label for="x">X (0-7):</label>
+                <input type="number" id="x" min="0" max="7" required>
+
+                <label for="y">Y (0-7):</label>
+                <input type="number" id="y" min="0" max="7" required>
+
+                <label for="r">Rot (0-255):</label>
+                <input type="number" id="r" min="0" max="255" required>
+
+                <label for="g">Grün (0-255):</label>
+                <input type="number" id="g" min="0" max="255" required>
+
+                <label for="b">Blau (0-255):</label>
+                <input type="number" id="b" min="0" max="255" required>
+
+                <button type="submit">Pixel setzen</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

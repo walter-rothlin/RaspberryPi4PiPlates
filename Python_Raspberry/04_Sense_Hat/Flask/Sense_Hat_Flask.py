@@ -11,7 +11,8 @@
 # Autor: Walter Rothlin
 #
 # History:  
-# 01-Jul-2025   Walter Rothlin      Initial Version
+# 01-Jul-2025   Walter Rothlin     Initial Version
+# 04-Oct-2025  Walter Rothlin      Prepared for HBU MLZ 2025
 # ------------------------------------------------------------------
 
 from flask import *
