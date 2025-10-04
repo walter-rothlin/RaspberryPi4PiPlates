@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/LN/2024/HBU_MLZ/_Vorbereitung/01_SenseHat_Flask.py
+# https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/Flask/LN/SenseHat/Vorbereitung/01_SenseHat_Flask.py
 
 from flask import *
 from sense_hat import SenseHat
