@@ -13,7 +13,7 @@
 # History:
 # 01-Jul-2025  Walter Rothlin     Initial Version
 # 04-Oct-2025  Walter Rothlin     Prepared for HBU MLZ 2025
-# 06-Oct-2025  Walter Rothlin     Defined all Endpoints
+# 06-Oct-2025  Walter Rothlin     Defined and implemented all Endpoints
 # ------------------------------------------------------------------
 
 from flask import *
@@ -27,15 +27,15 @@ def get_http_parameter(request, name_endpoint='unknown', verbal=False):
     if request.method == "GET":
         all_parameters = dict(request.args)
         if verbal:
-            print(f"show_message: GET: {all_parameters}")
+            print(f"get_http_parameter: GET: {all_parameters}")
     elif request.method == "POST":
         all_parameters = dict(request.form)
         if verbal:
-            print(f"show_message: POST: {all_parameters}")
+            print(f"get_http_parameter: POST: {all_parameters}")
     elif request.is_json:
         all_parameters = request.get_json()
         if verbal:
-            print(f"show_message: JSON: {all_parameters}")
+            print(f"get_http_parameter: JSON: {all_parameters}")
     else:
         all_parameters = {}
 
@@ -112,7 +112,7 @@ def convert2Boolean(value, default_value=None):
         return default_value
 
 
-def convert2RGB(value, default_value=None):
+def convert2RGB_old(value, default_value=None):
     try:
         # Bereits Tuple/List mit 3 Elementen
         if isinstance(value, (tuple, list)) and len(value) == 3:
@@ -152,13 +152,72 @@ def convert2RGB(value, default_value=None):
         return default_value
 
 
-red = (255, 0, 0)
-blue = (0, 0, 255)
-green = (0, 255, 0)
-black = (0, 0, 0)
+def convert2RGB(value, default_value=None):
+    """
+        print(convert2RGB((255,0,128)))        # (255, 0, 128)
+        print(convert2RGB([0,128,255]))        # (0, 128, 255)
+        print(convert2RGB("255,0,128"))        # (255, 0, 128)
+        print(convert2RGB("0 128 255"))        # (0, 128, 255)
+        print(convert2RGB("#ff00ff"))          # (255, 0, 255)
+        print(convert2RGB("ff00ff"))           # (255, 0, 255)
+        print(convert2RGB("red"))              # (255, 0, 0)
+        print(convert2RGB("lightblue"))        # (173, 216, 230)
+        print(convert2RGB(100))                # (100, 100, 100)
+        print(convert2RGB("unknown", default_value=(0,0,0)))  # (0, 0, 0)
+    """
+    try:
+        # Bereits Tuple/List mit 3 Elementen
+        if isinstance(value, (tuple, list)) and len(value) == 3:
+            return tuple(int(min(max(0, v), 255)) for v in value)
+
+        # String-Verarbeitung
+        elif isinstance(value, str):
+            cleaned = value.strip().replace(" ", "").replace("'", "").lower()
+
+            # Hex-Farbe
+            if cleaned.startswith('#'):
+                cleaned = cleaned[1:]
+            if len(cleaned) == 6 and all(c in '0123456789abcdef' for c in cleaned):
+                r = int(cleaned[0:2], 16)
+                g = int(cleaned[2:4], 16)
+                b = int(cleaned[4:6], 16)
+                return (r, g, b)
+
+            # CSS3-Farbname
+            try:
+                rgb = webcolors.name_to_rgb(cleaned)
+                return (rgb.red, rgb.green, rgb.blue)
+            except ValueError:
+                pass  # kein bekannter Name, weitermachen
+
+            # RGB-Komma- oder Leerzeichen-Format
+            cleaned = cleaned.replace("(", "").replace(")", "")
+            print(f'--> cleaned:{cleaned}')
+            if ',' in cleaned:
+                parts = cleaned.split(',')
+            else:
+                parts = cleaned.split()
+
+            print(f'--> parts:{parts}')
+            if len(parts) != 3:
+                return default_value
+            return tuple(int(min(max(0, int(p)), 255)) for p in parts)
+
+        # Einzelzahl → Grau
+        elif isinstance(value, (int, float)):
+            v = int(min(max(0, int(value)), 255))
+            return (v, v, v)
+
+        else:
+            return default_value
+
+    except Exception:
+        return default_value
+
 
 app = Flask(__name__)
 version = 'Walter Rothlin V1.0'
+last_request = None
 
 sense = SenseHat()
 
@@ -189,17 +248,43 @@ def get_status():
 # ====================
 @app.route('/set_rotation', methods=['GET', 'POST'])
 def set_rotation():
-    return f'set_rotation() not implemented yet!<br/><br/><a href="/">Back</a>'
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
+    print(f'10) {arguments}')
+    r = convert2Float(received_parameter.get('r'), 0)
+    redraw = convert2Boolean(received_parameter.get('redraw'), True)
+    if r not in [0, 90, 180, 270]:
+        r = 0
+    print(f'10) set_rotation({r}, {redraw})')
+    sense.set_rotation(r=r, redraw=redraw)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/flip_h', methods=['GET', 'POST'])
 def flip_h():
-    return f'flip_h() not implemented yet!<br/><br/><a href="/">Back</a>'
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
+    print(f'20) {arguments}')
+    redraw = convert2Boolean(received_parameter.get('redraw'), True)
+    print(f'20) flip_h({redraw})')
+    sense.flip_h(redraw=redraw)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'flip_h() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/flip_v', methods=['GET', 'POST'])
 def flip_v():
-    return f'flip_v() not implemented yet!<br/><br/><a href="/">Back</a>'
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
+    print(f'30) {arguments}')
+    redraw = convert2Boolean(received_parameter.get('redraw'), True)
+    print(f'30) flip_v({redraw})')
+    sense.flip_v(redraw=redraw)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'flip_v() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/set_pixels', methods=['GET', 'POST'])
@@ -211,56 +296,50 @@ def set_pixels():
 def get_pixels():
     pixel_status = sense.get_pixels()
     return pixel_status
+    # return f'get_pixels() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/set_pixel', methods=['GET', 'POST'])
 def set_pixel():
-    all_get_parameters = dict(request.args.items())
-    print(all_get_parameters)
-    x = int(all_get_parameters.get('x', '0'))
-    y = int(all_get_parameters.get('y', '0'))
-    r = int(all_get_parameters.get('r', '0'))
-    g = int(all_get_parameters.get('g', '0'))
-    b = int(all_get_parameters.get('b', '0'))
-
-    sense.set_pixel(x, y, r, g, b)
-    return f'set_pixel({x},{y},{r},{g},{b})!<br/><br/><a href="/">Back</a>'
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
+    print(f'60) {arguments}')
+    x = convert2Integer(received_parameter.get('x'), -1)
+    y = convert2Integer(received_parameter.get('y'), -1)
+    r = convert2Integer(received_parameter.get('r'), -1)
+    g = convert2Integer(received_parameter.get('g'), -1)
+    b = convert2Integer(received_parameter.get('b'), -1)
+    pixel = convert2RGB(received_parameter.get('pixel'), None)
+    if pixel is not None:
+        print(f'60) set_pixel({x}, {y}, pixel={pixel})')
+        sense.set_pixel(x, y, pixel)
+    else:
+        print(f'60) set_pixel({x}, {y}, {r}, {g}, {b})')
+        sense.set_pixel(x, y, r, g, b)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'set_pixel() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/get_pixel', methods=['GET', 'POST'])
 def get_pixel():
     return f'get_pixel() not implemented yet!<br/><br/><a href="/">Back</a>'
+    # return f'get_pixel() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/clear', methods=['GET', 'POST'])
 def clear():
-    # GET: Farbe aus Query-Parametern
-    # POST: Farbe aus Form-Daten oder JSON
-    bg_color = "black"  # Default
+    print('clear called!!!')
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name, verbal=True)
+    print(f'40) {arguments}')
+    colour = convert2RGB(received_parameter.get('colour'), (0, 0, 0))
 
-    if request.method == "GET":
-        bg_color = request.args.get("color", "black")
-    elif request.method == "POST":
-        # Form-data
-        if "color" in request.form:
-            bg_color = request.form.get("color", "black")
-        # JSON
-        elif request.is_json:
-            data = request.get_json()
-            bg_color = data.get("color", "black")
-
-    try:
-        if bg_color.startswith("#"):  # Hexwert, z.B. #ff00cc
-            rgb = tuple(int(bg_color[i:i + 2], 16) for i in (1, 3, 5))
-            sense.clear(rgb)
-        else:
-            rgb = webcolors.name_to_rgb(bg_color)
-            sense.clear((rgb.red, rgb.green, rgb.blue))
-    except Exception as e:
-        sense.clear()  # Fallback schwarz
-        return f'❌ Ungültige Farbe "{bg_color}" ({e}), Matrix auf schwarz gesetzt.<br/><a href="/">Back</a>'
-
-    return f'✅ Clear LED matrix to color {bg_color}!<br/><br/><a href="/">Back</a>'
+    print(f'40) clear({colour})')
+    sense.clear(colour)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'clear() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/show_message', methods=['GET', 'POST'])
@@ -268,13 +347,16 @@ def show_message():
     received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
     print(f'1) {arguments}')
     text_string = received_parameter.get('text_string', 'Kein Wert!!!')
-    scroll_speed = received_parameter.get('scroll_speed')
-    text_colour = received_parameter.get('text_colour')
-    back_colour = received_parameter.get('back_colour')
+    scroll_speed = convert2Float(received_parameter.get('scroll_speed'), 0.1)
+    text_colour = convert2RGB(received_parameter.get('text_colour'), (255, 255, 255))
+    back_colour = convert2RGB(received_parameter.get('back_colour'), (0, 0, 0))
 
-    print(f'2) show_message({text_string}, {scroll_speed}, {text_colour}, {back_colour})')
-    sense.show_message(text_string=text_string, scroll_speed=convert2Float(scroll_speed, 0.2), text_colour=convert2RGB(text_colour, (255, 255, 255)), back_colour=convert2RGB(back_colour, (0, 0, 0)))
-    return f'{arguments} not implemented yet!<br/><br/><a href="/">Back</a>'
+    print(f'1) show_message({text_string}, {scroll_speed}, {text_colour}, {back_colour})')
+    sense.show_message(text_string=text_string, scroll_speed=scroll_speed, text_colour=text_colour, back_colour=back_colour)
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'show_message() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/show_letter', methods=['GET', 'POST'])
@@ -287,7 +369,10 @@ def show_letter():
 
     print(f'2) show_letter({s}, {text_colour}, {back_colour})')
     sense.show_letter(s=s, text_colour=text_colour, back_colour=back_colour)
-    return f'{arguments} not implemented yet!<br/><br/><a href="/">Back</a>'
+    last_request = arguments
+    return render_template('index.html', version=version, last_request=last_request)
+    # return f'{arguments}<br/><br/><a href="/">Back</a>'
+    # return f'show_letter() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 # =====================
@@ -297,18 +382,21 @@ def show_letter():
 def get_temperature():
     return {'value': sense.get_temperature(),
             'units': '°C'}
+    # return f'get_temperature() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/get_pressure')
 def get_pressure():
     return {'value': sense.get_pressure(),
             'units': 'mBar'}
+    # return f'get_pressure() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/get_humidity')
 def get_humidity():
     return {'value': sense.get_humidity(),
             'units': '%'}
+    # return f'get_humidity() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 @app.route('/get_meteo_sensor_values')
@@ -350,8 +438,5 @@ def LED_Matrix_Tester():
 
 
 if __name__ == '__main__':
-    # app.run(debug=True, host='RothlinsPi-2.bzu.ads', port=5002)
     # app.run(debug=True, host='192.168.1.170', port=5002)  # Peterliwiese 33
     app.run(debug=True, host='192.168.86.138', port=5002)  # Laax
-
-    # app.run(debug=True, host='127.0.0.1', port=5002)
