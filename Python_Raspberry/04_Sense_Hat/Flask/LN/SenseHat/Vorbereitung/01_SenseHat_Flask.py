@@ -25,7 +25,10 @@ from datetime import datetime
 import webcolors
 import inspect
 
-version = 'Ihr_Vorname Ihr_Nachname V0.0)'
+# ===========================================
+# globale Variablen
+# ===========================================
+version = 'Ihr_Vorname Ihr_Nachname (V0.0)'
 request_log = []
 
 MySenseHat_Classed_used = False

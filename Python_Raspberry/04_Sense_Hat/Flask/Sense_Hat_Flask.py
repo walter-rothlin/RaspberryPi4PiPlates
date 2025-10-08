@@ -24,7 +24,10 @@ from datetime import datetime
 import webcolors
 import inspect
 
-version = 'Walter Rothlin V1.0)'
+# ===========================================
+# globale Variablen
+# ===========================================
+version = 'Walter Rothlin (V1.0)'
 request_log = []
 
 MySenseHat_Classed_used = False
