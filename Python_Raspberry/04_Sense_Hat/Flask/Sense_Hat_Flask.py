@@ -24,7 +24,16 @@ from datetime import datetime
 import webcolors
 import inspect
 
+version = 'Walter Rothlin V1.0)'
+request_log = []
 
+MySenseHat_Classed_used = False
+if MySenseHat_Classed_used:
+    from Class_My_SenseHat import *
+
+# ===========================================
+# Common functions for URL-Parameter handling
+# ===========================================
 def get_http_parameter(request, name_endpoint='unknown', verbal=False):
     if request.method == "GET":
         all_parameters = dict(request.args)
@@ -217,18 +226,16 @@ def convert2RGB(value, default_value=None):
         return default_value
 
 
+# ===========================================
+# Application and Endpoints
+# ===========================================
 app = Flask(__name__)
-version = 'Walter Rothlin V1.1'
-request_log = []
-
-MySenseHat_Classed_used = True
 if MySenseHat_Classed_used:
-    from Class_My_SenseHat import *
-
     sense = MySenseHat()
 else:
     sense = SenseHat()
 
+sense.clear()  # LED-Matrix löschen
 
 # ====================
 # Overall-Status

@@ -15,7 +15,7 @@
 # 01-Jul-2025  Walter Rothlin     Initial Version
 # 04-Oct-2025  Walter Rothlin     Prepared for HBU MLZ 2025
 # 06-Oct-2025  Walter Rothlin     Defined and implemented all Endpoints
-
+# 08-Oct-2025  Walter Rothlin     Prepared for MLZ
 # ------------------------------------------------------------------
 
 from flask import *
@@ -25,7 +25,17 @@ from datetime import datetime
 import webcolors
 import inspect
 
+version = 'Ihr_Vorname Ihr_Nachname V0.0)'
+request_log = []
 
+MySenseHat_Classed_used = False
+if MySenseHat_Classed_used:
+    from Class_My_SenseHat import *
+
+
+# ===========================================
+# Common functions for URL-Parameter handling
+# ===========================================
 def get_http_parameter(request, name_endpoint='unknown', verbal=False):
     if request.method == "GET":
         all_parameters = dict(request.args)
@@ -218,18 +228,16 @@ def convert2RGB(value, default_value=None):
         return default_value
 
 
+# ===========================================
+# Application and Endpoints
+# ===========================================
 app = Flask(__name__)
-version = 'Walter Rothlin V1.1'
-request_log = []
-
-MySenseHat_Classed_used = True
 if MySenseHat_Classed_used:
-    from Class_My_SenseHat import *
-
     sense = MySenseHat()
 else:
     sense = SenseHat()
 
+sense.clear()  # LED-Matrix löschen
 
 # ====================
 # Overall-Status
