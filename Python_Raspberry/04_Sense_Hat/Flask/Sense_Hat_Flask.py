@@ -30,7 +30,7 @@ import inspect
 version = 'Walter Rothlin (V1.0)'
 request_log = []
 
-MySenseHat_Classed_used = False
+MySenseHat_Classed_used = True
 if MySenseHat_Classed_used:
     from Class_My_SenseHat import *
 
