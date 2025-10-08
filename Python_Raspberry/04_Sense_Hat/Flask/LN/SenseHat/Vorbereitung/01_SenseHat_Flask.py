@@ -31,10 +31,6 @@ import inspect
 version = 'Ihr_Vorname Ihr_Nachname (V0.0)'
 request_log = []
 
-MySenseHat_Classed_used = False
-if MySenseHat_Classed_used:
-    from Class_My_SenseHat import *
-
 
 # ===========================================
 # Common functions for URL-Parameter handling
@@ -235,11 +231,7 @@ def convert2RGB(value, default_value=None):
 # Application and Endpoints
 # ===========================================
 app = Flask(__name__)
-if MySenseHat_Classed_used:
-    sense = MySenseHat()
-else:
-    sense = SenseHat()
-
+sense = SenseHat()
 sense.clear()  # LED-Matrix löschen
 
 # ====================
