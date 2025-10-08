@@ -403,34 +403,6 @@ def show_letter():
     # return f'show_letter() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
-# ============================
-# Enpoints in MySenseHat Class
-# ============================
-@app.route('/draw_line', methods=['GET', 'POST'])
-def draw_line():
-    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
-    print(f'100) {arguments}')
-    x_start = convert2Integer(received_parameter.get('x_start'), -1)
-    y_start = convert2Integer(received_parameter.get('y_start'), -1)
-    x_end = convert2Integer(received_parameter.get('x_end'), -1)
-    y_end = convert2Integer(received_parameter.get('y_end'), -1)
-    r = convert2Integer(received_parameter.get('r'), -1)
-    g = convert2Integer(received_parameter.get('g'), -1)
-    b = convert2Integer(received_parameter.get('b'), -1)
-    draw_speed = convert2Float(received_parameter.get('draw_speed'), 0)
-    pixel = None
-    if pixel is not None:
-        print(f'100) draw_line({x}, {y}, pixel={pixel})')
-        sense.draw_line(x, y, pixel)
-    else:
-        print(f'100) draw_line({x_start}, {y_start}, {x_end}, {y_end}, {r}, {g}, {b})')
-        sense.draw_line(x_start, y_start, x_end, y_end, r, g, b, 0.1)
-
-    request_log.append(f"{datetime.now().strftime('%d-%m-%y %H:%M:%S')}: {arguments}")
-    return render_template('index.html', version=version, request_log=request_log)
-    # return f'draw_line() not implemented yet!<br/><br/><a href="/">Back</a>'
-
-
 # =====================
 # Environmental sensors
 # =====================
@@ -498,6 +470,33 @@ def index():
 @app.route('/LED_Matrix_Tester')
 def LED_Matrix_Tester():
     return render_template('LED_Matrix_Tester.html')
+
+# ============================
+# Enpoints in MySenseHat Class
+# ============================
+@app.route('/draw_line', methods=['GET', 'POST'])
+def draw_line():
+    received_parameter, arguments = get_http_parameter(request, inspect.currentframe().f_code.co_name)
+    print(f'100) {arguments}')
+    x_start = convert2Integer(received_parameter.get('x_start'), -1)
+    y_start = convert2Integer(received_parameter.get('y_start'), -1)
+    x_end = convert2Integer(received_parameter.get('x_end'), -1)
+    y_end = convert2Integer(received_parameter.get('y_end'), -1)
+    r = convert2Integer(received_parameter.get('r'), -1)
+    g = convert2Integer(received_parameter.get('g'), -1)
+    b = convert2Integer(received_parameter.get('b'), -1)
+    draw_speed = convert2Float(received_parameter.get('draw_speed'), 0)
+    pixel = None
+    if pixel is not None:
+        print(f'100) draw_line({x}, {y}, pixel={pixel})')
+        sense.draw_line(x, y, pixel)
+    else:
+        print(f'100) draw_line({x_start}, {y_start}, {x_end}, {y_end}, {r}, {g}, {b})')
+        sense.draw_line(x_start, y_start, x_end, y_end, r, g, b, 0.1)
+
+    request_log.append(f"{datetime.now().strftime('%d-%m-%y %H:%M:%S')}: {arguments}")
+    return render_template('index.html', version=version, request_log=request_log)
+    # return f'draw_line() not implemented yet!<br/><br/><a href="/">Back</a>'
 
 
 if __name__ == '__main__':

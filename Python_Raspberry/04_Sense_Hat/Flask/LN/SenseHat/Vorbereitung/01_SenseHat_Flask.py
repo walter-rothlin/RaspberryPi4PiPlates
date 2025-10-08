@@ -326,12 +326,6 @@ def show_letter():
     return render_template('index.html', version=version, request_log=request_log)
     # return f'show_letter() not implemented yet!<br/><br/><a href="/">Back</a>'
 
-
-# ============================
-# Enpoints in MySenseHat Class
-# ============================
-
-
 # =====================
 # Environmental sensors
 # =====================
@@ -368,6 +362,12 @@ def index():
 @app.route('/LED_Matrix_Tester')
 def LED_Matrix_Tester():
     return render_template('LED_Matrix_Tester.html')
+
+
+
+# ============================
+# Enpoints in MySenseHat Class
+# ============================
 
 
 if __name__ == '__main__':
