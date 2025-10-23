@@ -110,9 +110,9 @@ def convert2Boolean(value, default_value=None):
     try:
         if isinstance(value, str):
             cleaned = value.strip().lower()  # führende/trailing Spaces weg + lowercase
-            if cleaned in ('1', 'true', 'yes', 'y'):
+            if cleaned in ('1', 'true', 'yes', 'y', 'ja', 'j'):
                 return True
-            elif cleaned in ('0', 'false', 'no', 'n'):
+            elif cleaned in ('0', 'false', 'no', 'n', 'nein'):
                 return False
             else:
                 return default_value
