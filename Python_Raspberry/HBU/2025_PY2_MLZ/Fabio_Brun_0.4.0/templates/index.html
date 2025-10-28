@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/Flask/LN/SenseHat/Vorbereitung/templates/index_V1.html -->
+    <meta charset="UTF-8">
+	<!--
+	<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        a, button {
+            margin: 25px 0 25px 0;
+			margin-bottom: 10px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            border-radius: 5px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        a:hover, button:hover {
+            background: #0056b3;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-template-rows: repeat(8, 40px);
+            gap: 4px;
+            margin-top: 15px;
+        }
+        .pixel {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+       .form-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        label {
+            display: block;
+            margin: 6px 0 3px;
+        }
+        input {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+		}
+		.link-btn {
+			display: block;        /* block, damit vertikal gestapelt */
+			margin-bottom: 5px;   /* Abstand zwischen den Buttons/Links */
+    
+}
+    </style>
+	-->
+	<style>
+        .log-output {
+            font-family: monospace;
+            white-space: pre-wrap; /* Zeilenumbrüche beibehalten */
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+    </style>
+    <title>Sense_Hat REST</title>
+</head>
+
+<body>
+    <H1>Index (Version: {{ version }})</H1>
+    <a href="/">Home</a><br/><br/>
+	<a href="https://pythonhosted.org/sense-hat/api/" target="_new">Sense-Hat API Doc</a><br/><br/>
+
+	<H1>Test-Cases already implemented</H1>
+	<!--Legende bei den Test-Cases:<br/>
+	❌ Failed<br/>
+	✅ OK<br/>
+	<br/><br/>-->
+    <H3>Status Sense-Hat</H3>
+    ✅ <a href="/get_status">/get_status</a> Get Sense_Hat status as JSON<br/>
+
+    <H3>Clear</H3>
+    <table>
+        <tr>
+            <td>✅</td>
+            <td><a href="/clear" class="link-btn">/clear</a></td>
+            <td>Clear_LED to black</td>
+        </tr>
+        <tr>
+            <td>✅</td>
+            <td><a href="/clear?colour=blue" class="link-btn">/clear?colour=blue</a></td>
+            <td>Clear_LED to blue</td>
+        </tr>
+        <tr>
+            <td>✅</td>
+            <td><a href="/clear?colour=%23ffff00" class="link-btn">/clear?colour=%23ffff00</a></td>
+            <td>Clear_LED to %23ffff00</td>
+        </tr>
+        <tr>
+            <td>✅</td>
+            <td><a href="/clear?colour=(255, 0, 255)" class="link-btn">/clear?colour=(255,0,255)</a></td>
+            <td>Clear_LED to (255, 0, 255)</td>
+        </tr>
+        <tr>
+            <td>✅</td>
+            <td>clear(<input type="color" id="colorPicker_ForClear" value="#ffff00">)</td>
+            <td>
+                <button type="button" onclick="sendColor_forClear()">Clear_LED → Gewählte Farbe</button>
+            </td>
+
+        </tr>
+    </table>
+
+	<script>
+	function sendColor_forClear() {
+    const color = document.getElementById("colorPicker_ForClear").value; // z.B. "#ffff00"
+
+    // POST-Request mit fetch
+    fetch("/clear", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "colour=" + encodeURIComponent(color)
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Antwort anzeigen
+        //document.body.insertAdjacentHTML("beforeend", "<div style='margin-top:10px;'>" + data + "</div>");
+    })
+    .catch(err => console.error("Fehler:", err));
+	}
+	</script>
+
+	<br/><br/>
+	<H3>Show-Letter</H3>
+	<table>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/show_letter?s=?" class="link-btn">/show_letter?s=?</a></td>
+            <td>show_letter('?')</td>
+        </tr>
+		<tr>
+		    <td>✅</td>
+            <td><a href="/show_letter?s=!&text_colour=255,255,0&back_colour=0,0,100" class="link-btn">/show_letter?s=!&text_colour=255,255,0&back_colour=0,0,100</a></td>
+            <td>show_letter('!', (255,255,0), (0,0,100))</td>
+        </tr>
+
+    </table>
+	<br/>
+	<form action="/show_letter" method="POST">
+	  ✅
+	  <label for="s">show_letter(</label>
+	  <input type="text" id="s" name="s" value="!" size="3">,
+
+	  <label for="text_colour">text_colour=</label>
+	  <input type="text" id="text_colour" name="text_colour" value="255,0,255" size="11">,
+
+	  <label for="back_colour">back_colour=</label>
+	  <input type="text" id="back_colour" name="back_colour" value="0,0,0" size="11">)
+
+	  <button type="submit">POST</button>
+	</form>
+	<form action="/show_letter" method="POST">
+	  ✅
+	  <label for="s">show_letter(</label>
+	  <input type="text" id="s" name="s" value="X" size="3">,
+
+	  <label for="text_colour">text_colour=</label>
+	  <input type="text" id="text_colour" name="text_colour" value="#FF 00 00" size="11">,
+
+	  <label for="back_colour">back_colour=</label>
+	  <input type="text" id="back_colour" name="back_colour" value="(100, 100, 100)" size="11">)
+
+	  <button type="submit">POST</button>
+	</form>
+	<form action="/show_letter" method="POST">
+	  ✅
+	  <label for="s">show_letter(</label>
+	  <input type="text" id="s" name="s" value="Ys" size="3">,
+
+	  <label for="text_colour">text_colour=</label>
+	  <input type="text" id="text_colour" name="text_colour" value="#FF ff 00" size="11">,
+
+	  <label for="back_colour">back_colour=</label>
+	  <input type="text" id="back_colour" name="back_colour" value="xxxx" size="11">)
+
+	  <button type="submit">POST</button>
+	</form>
+	<form action="/show_letter" method="POST">
+	  ✅
+	  <label for="s">show_letter(</label>
+	  <input type="text" id="s" name="s" value="&" size="3">,
+
+	  <label for="text_colour">text_colour=</label>
+	  <input type="text" id="text_colour" name="text_colour" value="(255,100,0" size="11">,
+
+	  <label for="back_colour">back_colour=</label>
+	  <input type="text" id="back_colour" name="back_colour" value="100,99,99)" size="11">)
+
+	  <button type="submit">POST</button>
+	</form>
+
+
+<H1>Test-Cases to be implemented first</H1>
+<H2>LED-Matrix</H2>
+<H3>Set-Rotation</H3>
+<table>
+    <tr>
+	    <td>✅</td>
+        <td><a href="/set_rotation?r=0&redraw=True" class="link-btn">/set_rotation?r=0&redraw=True</a></td>
+        <td>Set to 0° (do Redraw)</td>
+    </tr>
+	<tr>
+	    <td>✅</td>
+        <td><a href="/set_rotation?r=90&redraw=True" class="link-btn">/set_rotation?r=90&redraw=True</a></td>
+        <td>Set to 90° (do Redraw)</td>
+    </tr>
+	<tr>
+	    <td>✅</td>
+        <td><a href="/set_rotation?r=180&redraw=True" class="link-btn">/set_rotation?r=180&redraw=True</a></td>
+        <td>Set to 180° (do Redraw)</td>
+    </tr>
+	<tr>
+	    <td>✅</td>
+        <td><a href="/set_rotation?r=270&redraw=True" class="link-btn">/set_rotation?r=270&redraw=True</a></td>
+        <td>Set to 270° (do Redraw)</td>
+    </tr>
+	<tr>
+	    <td>✅</td>
+        <td><a href="/set_rotation?r=135&redraw=True" class="link-btn">/set_rotation?r=135&redraw=True</a></td>
+        <td>Set to 135° (do Redraw)  ==> Set to 0°</td>
+    </tr>
+</table>
+
+<br/><br/>
+<H3>Flip-H</H3>
+<table>
+    <tr>
+	    <td>✅</td>
+        <td><a href="/flip_h?redraw=True" class="link-btn">/flip_h?redraw=True</a></td>
+        <td>flip-H (do Redraw)</td>
+    </tr>
+</table>
+
+<br/><br/>
+<H3>Flip-V</H3>
+<table>
+    <tr>
+	    <td>✅</td>
+        <td><a href="/flip_v?redraw=True" class="link-btn">/flip_v?redraw=True</a></td>
+        <td>flip-V (do Redraw)</td>
+    </tr>
+</table>
+
+<!--
+<br/><br/>
+<H3>Set-Pixels</H3>
+<table>
+    <tr>
+	    <td>❌</td>
+        <td><a href="/set_pixels" class="link-btn">/set_pixels</a></td>
+        <td>set_pixels</td>
+    </tr>
+    <tr>
+	    <td>❌</td>
+        <td><a href="/set_pixels?pixel_list=[[255,0,255],[255,0,255]]" class="link-btn">/set_pixels?pixel_list=[[255,0,255],[255,0,255]]</a></td>
+        <td>set_pixels</td>
+    </tr>
+</table>
+-->
+
+<br/><br/>
+<H3>Get-Pixels</H3>
+<table>
+    <tr>
+	    <td>✅</td>
+        <td><a href="/get_pixels" class="link-btn">/get_pixels</a></td>
+        <td>get_pixels() as JSON</td>
+    </tr>
+</table>
+
+
+	<br/><br/>
+    <H3>Set Pixel</H3>
+    <table>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/set_pixel?x=2&y=4&r=255&g=255&b=0" class="link-btn">/set_pixel?x=2&y=4&r=255&g=255&b=0</a></td>
+            <td>set_pixel(2,4,255,255,0)</td>
+        </tr>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/set_pixel?x=0&y=0&r=255&g=0&b=0" class="link-btn">/set_pixel?x=0&y=0&r=255&g=0&b=0</a></td>
+            <td>set_pixel(0,0,255,0,0)</td>
+        </tr>
+		<tr>
+		    <td>✅</td>
+            <td><a href="/set_pixel?x=4&y=6&r=255&g=0&b=255" class="link-btn">/set_pixel?x=4&y=6&r=255&g=0&b=255</a></td>
+            <td>set_pixel(4,6,255,0,255)</td>
+        </tr>
+		<tr>
+		    <td>✅</td>
+            <td><a href="/set_pixel?x=5&y=6&pixel=(255, 0, 255)" class="link-btn">/set_pixel?x=5&y=6&pixel=(255, 0, 255)</a></td>
+            <td>set_pixel(5,6,(255,0,255))</td>
+        </tr>
+        <tr>
+            <td>✅</td>
+            <td><a href="/LED_Matrix_Tester" class="link-btn">LED_Matrix_Tester</a></td>
+            <td>Manuelles Testen</td>
+        </tr>
+    </table>
+
+
+	<br/><br/>
+	<H3>Get Pixel</H3>
+	<table>
+        <tr>
+			<td>✅</td>
+            <td><a href="/get_pixel?x=2&y=4" class="link-btn">/get_pixel?x=2&y=4</a></td>
+            <td>get_pixel(2,4) as JSON</td>
+        </tr>
+    </table>
+
+
+	<br/><br/>
+	<H3>Show-Message</H3>
+	<table>
+        <tr>
+			<td>✅</td>
+            <td><a href="/show_message?text_string=Hallo" class="link-btn">/show_message?text_string=Hallo</a></td>
+            <td>show_message(Hallo)</td>
+        </tr>
+		<tr>
+			<td>✅</td>
+            <td><a href="/show_message?text_string=Hallo HBU&scroll_speed=0.2&text_colour=(255,0,255)&back_colour=(0,0,10)" class="link-btn">/show_message?text_string=Hallo HBU&scroll_speed=0.2&text_colour=(255,0,255)&back_colour=(0,0,10)</a></td>
+            <td>show_message('Hallo HBU', 0.2, (255,0,255), (0,0,0))</td>
+        </tr>
+	    <tr>
+			<td>✅</td>
+            <td><a href="/show_message?text_string=HBU&text_colour=(100,100,100)&back_colour=(0,0,0)" class="link-btn">/show_message?text_string=HBU&text_colour=(100,100,100)&back_colour=(0,0,0)</a></td>
+            <td>show_message('HBU', (100,100,100), (0,0,0))</td>
+        </tr>
+    </table>
+	<br/>
+	<form action="/show_message" method="POST">
+	  ✅
+	  <label for="text_string">show_message(</label>
+	  <input type="text" id="text_string" name="text_string" value="Hallo HBU" size="10">,
+
+	  <label for="scroll_speed">scroll_speed=</label>
+	  <input type="text" id="scroll_speed" name="scroll_speed" value="0.5" size="4">,
+
+	  <label for="text_colour">text_colour=</label>
+	  <input type="text" id="text_colour" name="text_colour" value="(255,0,255)" size="11">,
+
+	  <label for="back_colour">back_colour=</label>
+	  <input type="text" id="back_colour" name="back_colour" value="(0, 0, 0)" size="11">)
+
+	  <button type="submit">POST</button>
+	</form>
+
+
+	<H2>Environmental Sensors</H2>
+	<table>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/get_temperature" class="link-btn">/get_temperature</a></td>
+            <td>get_temperature() as JSON</td>
+        </tr>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/get_pressure" class="link-btn">/get_pressure</a></td>
+            <td>get_pressure() as JSON</td>
+        </tr>
+        <tr>
+		    <td>✅</td>
+            <td><a href="/get_humidity" class="link-btn">/get_humidity</a></td>
+            <td>get_humidity() as JSON</td>
+        </tr>
+		<tr>
+		    <td>✅</td>
+            <td><a href="/get_meteo_sensor_values" class="link-btn">/get_meteo_sensor_values</a></td>
+            <td>get_meteo_sensor_values() as JSON</td>
+        </tr>
+		<tr>
+		    <td>✅</td>
+            <td><a href="/get_weather" class="link-btn">/get_weather</a></td>
+            <td>get_weather() as HTML</td>
+        </tr>
+
+    </table>
+
+<H1>Test-Cases to be implemented with MySenseHat-Class</H1>
+    <H3>Set Pixel (Out of bounderies)</H3>
+    <table>
+        <tr>
+		    <td>❌</td>
+            <td><a href="/set_pixel?x=8&y=4&r=255&g=255&b=0" class="link-btn">/set_pixel?x=8&y=4&r=255&g=255&b=0</a></td>
+            <td>set_pixel(8,4,255,255,0)</td>
+        </tr>
+        <tr>
+		    <td>❌</td>
+            <td><a href="/set_pixel?x=0&y=8&r=255&g=0&b=0" class="link-btn">/set_pixel?x=0&y=8&r=255&g=0&b=0</a></td>
+            <td>set_pixel(0,8,255,0,0)</td>
+        </tr>
+		<tr>
+		    <td>❌</td>
+            <td><a href="/set_pixel?x=4&y=6&r=300&g=0&b=255" class="link-btn">/set_pixel?x=4&y=6&r=300&g=0&b=255</a></td>
+
+            <td>set_pixel(4,6,300,0,255)</td>
+        </tr>
+		<tr>
+		    <td>❌</td>
+            <td><a href="/set_pixel?x=5&y=6&pixel=(255,-10.5,255)" class="link-btn">/set_pixel?x=5&y=6&pixel=(255, -10.5, 255)</a></td>
+            <td>set_pixel(5,6,(255,-10.5,255))</td>
+        </tr>
+    </table>
+
+	<br/><br/>
+    <H3>draw_line</H3>
+    <table>
+        <tr>
+		    <td>❌</td>
+            <td><a href="/draw_line?x_start=-10&y_start=-10&x_end=10&y_end=10&r=0&g=255&b=0&draw_speed=0.1" class="link-btn">/draw_line?x_start=-10&y_start=-10&x_end=10&y_end=10&r=0&g=255&b=0&draw_speed=0.1</a></td>
+            <td>draw_line(-10, -10, 10, 10, 0, 255, 0, 0.1)) Gelbe Diagonale von oben links nach unten rechts (speed=0.1 </td>
+        </tr>
+    </table>
+
+
+	<br/><br/>
+	<H1>Test-Log</H1>
+    <div class="log-output" id="reqlog">
+        {% if request_log and request_log|length > 0 %}
+            {% for entry in request_log %}
+                {{ loop.index }}. {{ entry }}<br/>
+             {% endfor %}
+        {% else %}
+            Keine Log-Eintraege vorhanden.
+        {% endif %}
+	</div>
+</body>
+</html>

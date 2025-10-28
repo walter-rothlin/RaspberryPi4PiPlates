@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/Python_Raspberry/04_Sense_Hat/Flask/LN/SenseHat/Vorbereitung/templates/LED_Matrix_Tester.html -->
+    <meta charset="UTF-8">
+    <title>Sense HAT Matrix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        a, button {
+            margin: 5px 5px 5px 0;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            border-radius: 5px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        a:hover, button:hover {
+            background: #0056b3;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-template-rows: repeat(8, 40px);
+            gap: 4px;
+            margin-top: 15px;
+        }
+        .pixel {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+       .form-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        label {
+            display: block;
+            margin: 6px 0 3px;
+        }
+        input {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script>
+        let selectedColor = "#ff0000"; // Standard: Rot
+
+        function setSelectedColor(event) {
+            selectedColor = event.target.value;
+        }
+
+        function rgbFromHex(hex) {
+            let bigint = parseInt(hex.slice(1), 16);
+            let r = (bigint >> 16) & 255;
+            let g = (bigint >> 8) & 255;
+            let b = bigint & 255;
+            return [r, g, b];
+        }
+
+        function setPixel(x, y, el) {
+            let [r, g, b] = rgbFromHex(selectedColor);
+            el.style.backgroundColor = selectedColor;
+            // Anfrage an Flask schicken:
+            const url = `/set_pixel?x=${x}&y=${y}&r=${r}&g=${g}&b=${b}`;
+            fetch(url).catch(err => console.log("Fehler:", err));
+        }
+
+        function clearMatrix(color="black") {
+            fetch(`/clear?color=${color}`).catch(err => console.log("Fehler:", err));
+            // Vorschau im Browser zurücksetzen
+            document.querySelectorAll(".pixel").forEach(p => p.style.backgroundColor = "#000");
+        }
+
+		function setPixelManuel(event) {
+			event.preventDefault();
+			const x = document.getElementById("x").value;
+			const y = document.getElementById("y").value;
+			const r = document.getElementById("r").value;
+			const g = document.getElementById("g").value;
+			const b = document.getElementById("b").value;
+			const url = `/set_pixel?x=${x}&y=${y}&r=${r}&g=${g}&b=${b}`;
+			window.location.href = url;
+		}
+    </script>
+</head>
+<body>
+    <h1>Sense HAT Test-Steuerung V2.0</h1>
+
+    <div class="section">
+        <a href="/">🏠 Home</a>
+        <button onclick="clearMatrix()">Matrix löschen</button>
+    </div>
+
+    <div class="section">
+        <h3>Farbe wählen</h3>
+        <input type="color" value="#ff0000" onchange="setSelectedColor(event)">
+    </div>
+
+    <div class="section">
+        <h3>LED-Matrix</h3>
+        <div class="matrix">
+            <!-- 8x8 Pixel -->
+            <script>
+                for (let y = 0; y < 8; y++) {
+                    for (let x = 0; x < 8; x++) {
+                        document.write(
+                          `<div class="pixel" onclick="setPixel(${x},${y},this)"></div>`
+                        );
+                    }
+                }
+            </script>
+        </div>
+    </div>
+
+		<div class="form-box">
+            <form onsubmit="setPixelManuel(event)">
+                <label for="x">X (0-7):</label>
+                <input type="number" id="x" min="-1" max="10" required>
+
+                <label for="y">Y (0-7):</label>
+                <input type="number" id="y" min="-1" max="10" required>
+
+                <label for="r">Rot (0-255):</label>
+                <input type="number" id="r" min="-1" max="300" required>
+
+                <label for="g">Grün (0-255):</label>
+                <input type="number" id="g" min="-1" max="300" required>
+
+                <label for="b">Blau (0-255):</label>
+                <input type="number" id="b" min="-1" max="300" required>
+
+                <button type="submit">Pixel setzen</button>
+            </form>
+        </div>
+</body>
+</html>

@@ -1,0 +1,3 @@
+Flask>=2.0
+webcolors>=1.1
+# Note: sense_hat should be installed via apt on Raspberry Pi (see README_PI.md)

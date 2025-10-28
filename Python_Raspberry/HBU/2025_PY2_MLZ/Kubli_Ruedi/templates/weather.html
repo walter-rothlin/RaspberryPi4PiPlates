@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Sense-HAT Wetterdaten</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        #chart-container { width: 80vw; height: 60vh; }
+    </style>
+</head>
+<body>
+    <h1>Sense-HAT Wetterdaten (Live)</h1>
+    <div id="chart-row" style="display: flex; gap: 2em; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+        <div style="flex: 1 1 300px; min-width: 300px; max-width: 400px;">
+            <h2 style="text-align:center">Temperatur (°C)</h2>
+            <canvas id="tempChart" style="width:100%;height:300px;"></canvas>
+        </div>
+        <div style="flex: 1 1 300px; min-width: 300px; max-width: 400px;">
+            <h2 style="text-align:center">Druck (mBar)</h2>
+            <canvas id="pressureChart" style="width:100%;height:300px;"></canvas>
+        </div>
+        <div style="flex: 1 1 300px; min-width: 300px; max-width: 400px;">
+            <h2 style="text-align:center">Luftfeuchtigkeit (%)</h2>
+            <canvas id="humidityChart" style="width:100%;height:300px;"></canvas>
+        </div>
+    </div>
+    <script>
+        // Temperatur Chart
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        const tempData = { labels: [], datasets: [{ label: 'Temperatur (°C)', data: [], borderColor: 'red', fill: false }] };
+        const tempChart = new Chart(tempCtx, { type: 'line', data: tempData, options: { responsive: true, scales: { x: { title: { display: true, text: 'Zeit' } }, y: { title: { display: true, text: '°C' } } } } });
+
+        // Druck Chart
+        const pressureCtx = document.getElementById('pressureChart').getContext('2d');
+        const pressureData = { labels: [], datasets: [{ label: 'Druck (mBar)', data: [], borderColor: 'blue', fill: false }] };
+        const pressureChart = new Chart(pressureCtx, { type: 'line', data: pressureData, options: { responsive: true, scales: { x: { title: { display: true, text: 'Zeit' } }, y: { title: { display: true, text: 'mBar' } } } } });
+
+        // Luftfeuchtigkeit Chart
+        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+        const humidityData = { labels: [], datasets: [{ label: 'Luftfeuchtigkeit (%)', data: [], borderColor: 'green', fill: false }] };
+        const humidityChart = new Chart(humidityCtx, { type: 'line', data: humidityData, options: { responsive: true, scales: { x: { title: { display: true, text: 'Zeit' } }, y: { title: { display: true, text: '%' } } } } });
+
+        function fetchWeather() {
+            fetch('/get_meteo_sensor_values')
+                .then(response => response.json())
+                .then(json => {
+                    // Temperatur
+                    tempData.labels.push(json.timestamp);
+                    tempData.datasets[0].data.push(json.temperature);
+                    if (tempData.labels.length > 20) {
+                        tempData.labels.shift();
+                        tempData.datasets[0].data.shift();
+                    }
+                    tempChart.update();
+
+                    // Druck
+                    pressureData.labels.push(json.timestamp);
+                    pressureData.datasets[0].data.push(json.pressure);
+                    if (pressureData.labels.length > 20) {
+                        pressureData.labels.shift();
+                        pressureData.datasets[0].data.shift();
+                    }
+                    pressureChart.update();
+
+                    // Luftfeuchtigkeit
+                    humidityData.labels.push(json.timestamp);
+                    humidityData.datasets[0].data.push(json.humidity);
+                    if (humidityData.labels.length > 20) {
+                        humidityData.labels.shift();
+                        humidityData.datasets[0].data.shift();
+                    }
+                    humidityChart.update();
+                });
+        }
+        setInterval(fetchWeather, 10000);
+    </script>
+</body>
+</html>
