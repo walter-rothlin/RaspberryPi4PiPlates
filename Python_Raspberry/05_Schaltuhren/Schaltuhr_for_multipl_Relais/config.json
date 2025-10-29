@@ -1,0 +1,22 @@
+{
+    "relays": [
+        {
+            "name": "Licht",
+            "pin": 17
+        },
+        {
+            "name": "Pumpe",
+            "pin": 27
+        },
+        {
+            "name": "Lüfter",
+            "pin": 22
+        }
+    ],
+    "schedules": [],
+    "states": {
+        "Licht": false,
+        "Pumpe": false,
+        "Lüfter": false
+    }
+}

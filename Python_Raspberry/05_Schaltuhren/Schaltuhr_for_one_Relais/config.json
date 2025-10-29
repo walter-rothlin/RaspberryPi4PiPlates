@@ -1,0 +1,28 @@
+{
+    "schedules": [
+        {
+            "start": "07:00",
+            "end": "08:00",
+            "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "name": "Morgens (Mo-Fr)"
+        },
+        {
+            "start": "19:00",
+            "end": "22:00",
+            "weekdays": [
+                4,
+                5,
+                6
+            ],
+            "name": "Abend (Fr-Sa-So)"
+        }
+    ],
+    "state": false,
+    "relay_pin": 17
+}

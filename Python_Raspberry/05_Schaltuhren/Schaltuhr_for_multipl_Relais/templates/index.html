@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Multi-Relais Schaltuhr</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+<h1 class="h3 mb-3">🕒 Multi-Relais Schaltuhr</h1>
+
+<div class="row">
+<div class="col-md-6">
+<div class="card mb-3">
+<div class="card-header">Manuelle Steuerung</div>
+<div class="card-body">
+{% for r in cfg.relays %}
+<form action="/toggle/{{ r.name }}" method="post" class="mb-2 d-flex justify-content-between">
+<span>{{ r.name }}: <strong>{{ 'EIN' if cfg.states[r.name] else 'AUS' }}</strong></span>
+<button class="btn btn-sm {{ 'btn-danger' if cfg.states[r.name] else 'btn-success' }}" type="submit">
+{{ 'Ausschalten' if cfg.states[r.name] else 'Einschalten' }}
+</button>
+</form>
+{% endfor %}
+</div>
+</div>
+
+<div class="card mb-3">
+<div class="card-header">Neue Zeit planen</div>
+<div class="card-body">
+<form action="/add" method="post">
+<div class="mb-2">
+<label>Relais</label>
+<select class="form-select" name="relay" required>
+{% for r in cfg.relays %}
+<option value="{{ r.name }}">{{ r.name }}</option>
+{% endfor %}
+</select>
+</div>
+<div class="mb-2">
+<label>Start</label>
+<input type="time" class="form-control" name="start" required>
+</div>
+<div class="mb-2">
+<label>Ende</label>
+<input type="time" class="form-control" name="end" required>
+</div>
+<div class="mb-2">
+<label>Wochentage</label>
+<div class="d-flex flex-wrap">
+{% for idx, w in enumerate(weekdays) %}
+<div class="form-check me-2">
+<input class="form-check-input" type="checkbox" name="weekday" value="{{ idx }}" id="w{{ idx }}">
+<label class="form-check-label" for="w{{ idx }}">{{ w }}</label>
+</div>
+{% endfor %}
+</div>
+</div>
+<button class="btn btn-primary">Hinzufügen</button>
+</form>
+</div>
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="card mb-3">
+<div class="card-header">Geplante Zeiten</div>
+<div class="card-body">
+{% if cfg.schedules %}
+<ul class="list-group">
+{% for s in cfg.schedules %}
+<li class="list-group-item d-flex justify-content-between align-items-center">
+<div>{{ s.relay }}: {{ s.start }} → {{ s.end }} ·
+{% for d in s.weekdays %}
+<span class="badge bg-light text-dark me-1">{{ weekdays[d] }}</span>
+{% endfor %}
+</div>
+<form action="/delete/{{ loop.index0 }}" method="post">
+<button class="btn btn-sm btn-outline-danger">Löschen</button>
+</form>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p class="text-muted">Noch keine Zeiten konfiguriert.</p>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
