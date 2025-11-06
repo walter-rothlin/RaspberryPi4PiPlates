@@ -21,6 +21,7 @@
 # 28-Aug-2025   Walter Rothlin      Added nice Frontend
 # 29-Aug-2025   Walter Rothlin      Startable via crontab, Uhr richten
 # 26-Sep-2025   Walter Rothlin      Added Lampe on/off Relais
+# 02-Nov-2025   Walter Rothlin      Change Lampen-State to inverse
 # ------------------------------------------------------------------
 import RPi.GPIO as GPIO
 import time
@@ -35,6 +36,7 @@ GPIO_PIN_Lampe_On_Off = 19  # Pin-Definition for Lampe on/off     (BCM-Nummerier
 current_state = False  # Anfangszustand
 tick_controler = None
 aktion_aktiv = True
+suspended_to = None
 
 last_timer_config = {
     "func": None,
@@ -172,11 +174,11 @@ def set_lampen_relais(state: bool):
     global lampen_status
     lampen_status = state
     # Je nach Relais evtl. invertieren (HIGH = Aus, LOW = An)
-    GPIO.output(GPIO_PIN_Lampe_On_Off, GPIO.HIGH if state else GPIO.LOW)
+    GPIO.output(GPIO_PIN_Lampe_On_Off, GPIO.LOW if state else GPIO.HIGH)
 
 
 # === Flask Webserver ===
-app = Flask(__name__, template_folder="/home/pi/Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry/Bahnhofuhr/Python_On_RaspberryPi/templates")
+app = Flask(__name__, template_folder="/home/pi/Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry/06_Bahnhofuhr/Python_On_RaspberryPi/templates")
 
 
 @app.route("/")
@@ -234,7 +236,9 @@ def stop_timer():
 def suspend():
     global aktion_aktiv
     aktion_aktiv = False
-    # return {"status": "suspended", "message": "Aktionen werden nicht mehr ausgeführt."}
+    all_parameters = dict(request.form)
+    suspended_to = all_parameters.get('suspended_to')
+    print(f'status: suspended!  Ticks werden bis zum {suspended_to} nicht mehr ausgeführt.')
     return redirect(url_for("index"))
 
 
@@ -316,7 +320,7 @@ def toggle_lampe():
 
 if __name__ == '__main__':
     # TEST_01()
-
+    print('Sarting up SBB Clock....')
     # Initialisiere Standard-Konfiguration
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(GPIO_PIN_Min_Clock, GPIO.OUT)
@@ -330,11 +334,13 @@ if __name__ == '__main__':
 
     try:
         host_ip = get_ip()
-        print(f"Starte Flask auf {host_ip}:5001")
+        port = 5001
+        print(f"Starte Flask auf {host_ip}:{port}")
         time.sleep(3)
         set_lampen_relais(False)
         # app.run(debug=True, host=host_ip, port=5001, use_reloader=False)
-        app.run(host="0.0.0.0", port=5001, debug=False, use_reloader=False)
+        app.run(host=host_ip, port=port, debug=False, use_reloader=False)
+        app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
     except KeyboardInterrupt:
         print("Beendet durch Nutzer, stoppe Timer...")
         if tick_controler:
