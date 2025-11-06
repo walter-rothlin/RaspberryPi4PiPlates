@@ -1,11 +1,25 @@
+#! /usr/bin/env python3
+# ------------------------------------------------------------------
+# Name  : Schrittmotorensteuerung_02.py
+# ------------------------------------------------------------------
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/07_Schrittmotor/Schrittmotorensteuerung_02.py
+#
+# Description: Schrittmotoren ansteuern
+#
+#
+# Autor: Walter Rothlin
+#
+# History:
+# 06-Sep-2025   Walter Rothlin      Initial Version
+# ------------------------------------------------------------------
 import RPi.GPIO as GPIO
 import time
 
 # Pins am Raspberry Pi (BCM-Nummern)
-IN1 = 17
-IN2 = 18
-IN3 = 27
-IN4 = 22
+IN1 = 18
+IN2 = 23
+IN3 = 24
+IN4 = 25
 
 pins = [IN1, IN2, IN3, IN4]
 

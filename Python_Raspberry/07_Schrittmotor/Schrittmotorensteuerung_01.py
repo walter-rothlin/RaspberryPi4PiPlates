@@ -1,5 +1,17 @@
 #! /usr/bin/env python3
-
+# ------------------------------------------------------------------
+# Name  : Schrittmotorensteuerung_01.py
+# ------------------------------------------------------------------
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/07_Schrittmotor/Schrittmotorensteuerung_01.py
+#
+# Description: Schrittmotoren ansteuern
+# 
+#
+# Autor: Walter Rothlin
+#
+# History:
+# 06-Sep-2025   Walter Rothlin      Initial Version
+# ------------------------------------------------------------------
 from time import sleep
 import RPi.GPIO as GPIO
 
