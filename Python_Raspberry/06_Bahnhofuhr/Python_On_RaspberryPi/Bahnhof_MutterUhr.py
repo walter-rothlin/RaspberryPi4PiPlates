@@ -339,7 +339,7 @@ if __name__ == '__main__':
         time.sleep(3)
         set_lampen_relais(False)
         # app.run(debug=True, host=host_ip, port=5001, use_reloader=False)
-        app.run(host=host_ip, port=port, debug=False, use_reloader=False)
+        # app.run(host=host_ip, port=port, debug=False, use_reloader=False)
         app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
     except KeyboardInterrupt:
         print("Beendet durch Nutzer, stoppe Timer...")
