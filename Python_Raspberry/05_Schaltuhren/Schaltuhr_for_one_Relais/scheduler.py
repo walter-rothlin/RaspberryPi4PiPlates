@@ -1,23 +1,26 @@
+#!/usr/bin/python
+
+# ------------------------------------------------------------------
+# Name  : scheduler.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/05_Schaltuhren/Schaltuhr_for_multipl_Relais/scheduler.py
+#
+# Description: Schaltuhr Frontend
+#
+#
+# Autor: Walter Rothlin
+#
+# History:
+# 09-Nov-2025   Walter Rothlin    Initial Version
+#
+# ------------------------------------------------------------------
 import time
 from datetime import datetime
 import json, os
 import logging
+import RPi.GPIO as GPIO
 
-try:
-    import RPi.GPIO as GPIO
-except Exception:
-    class _FakeGPIO:
-        BCM = 'BCM'
-        OUT = 'OUT'
-        LOW = False
-        HIGH = True
-        def setmode(self, *_): pass
-        def setup(self, *_): pass
-        def output(self, *_): pass
-        def cleanup(self): pass
-    GPIO = _FakeGPIO()
 
-RELAY_PIN = 17
+RELAY_PIN = 21
 CONFIG_FILE = "config.json"
 schedules = []
 

@@ -1,23 +1,23 @@
+#!/usr/bin/python
+
+# ------------------------------------------------------------------
+# Name  : app.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/05_Schaltuhren/Schaltuhr_for_multipl_Relais/app.py
+#
+# Description: Schaltuhr Frontend
+#
+#
+# Autor: Walter Rothlin
+#
+# History:
+# 09-Nov-2025   Walter Rothlin    Initial Version
+#
+# ------------------------------------------------------------------
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import json, os, threading, time
 from datetime import datetime
 import logging
-
-# Try to import RPi.GPIO, fall back to a fake GPIO for development/testing on non-Pi systems.
-try:
-    import RPi.GPIO as GPIO
-except Exception:
-    class _FakeGPIO:
-        BCM = 'BCM'
-        OUT = 'OUT'
-        LOW = False
-        HIGH = True
-        def setmode(self, *_): pass
-        def setup(self, *_): pass
-        def output(self, *_): pass
-        def cleanup(self): pass
-    GPIO = _FakeGPIO()
-
+import RPi.GPIO as GPIO
 from scheduler import start_scheduler, update_schedule, set_relay_state, RELAY_PIN
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -52,7 +52,9 @@ ensure_config()
 
 @app.route("/")
 def index():
+    print(f'index() called')
     cfg = load_config()
+    print(f'index(): config loaded: {cfg}')
     # map weekdays numbers to names for display
     weekday_names = ["Mo","Di","Mi","Do","Fr","Sa","So"]
     return render_template("index.html", schedules=cfg["schedules"], state=cfg["state"], weekdays=weekday_names, config=cfg)
@@ -99,4 +101,4 @@ if __name__ == "__main__":
     # ensure relay matches saved state
     cfg = load_config()
     set_relay_state(cfg.get("state", False))
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5003, debug=False)
