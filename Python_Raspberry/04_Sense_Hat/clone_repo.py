@@ -48,6 +48,14 @@ def clone_github_repo(repo_url, clone_dir):
                     file_path = os.path.join(root, file)
                     os.chmod(file_path, 0o755)
                     print(f"🔧 Setze chmod 755 für: {file_path}")
+                    
+        # .py-Dateien chmod 755 setzen
+        for root, dirs, files in os.walk(target_path):
+            for file in files:
+                if file.endswith('.sh'):
+                    file_path = os.path.join(root, file)
+                    os.chmod(file_path, 0o755)
+                    print(f"🔧 Setze chmod 755 für: {file_path}")
 
     except subprocess.CalledProcessError as e:
         print("❌ Fehler beim Klonen des Repositories:")
