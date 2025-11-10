@@ -61,7 +61,7 @@ else
 fi
 
 # 3. Crontab-Eintrag vorbereiten
-CRON_ENTRY="@reboot /usr/bin/python3 $SHOWIP_LINK > /dev/null 2>&1 &"
+CRON_ENTRY="@reboot /usr/bin/python $SHOWIP_LINK > /dev/null 2>&1 &"
 
 # Crontab temporär sichern
 CRONTAB_TMP=$(mktemp)
