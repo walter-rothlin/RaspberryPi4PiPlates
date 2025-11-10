@@ -3,12 +3,22 @@
 HOME_DIR="$HOME"
 BIN_DIR="$HOME_DIR/bin"
 
-TARGET_REPO="../Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry/04_Sense_Hat"
-CLONE_REPO_SRC="$TARGET_REPO/clone_repo.py"
-SHOWIP_SRC="$TARGET_REPO/showIP.py"
+TARGET_REPO="../Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry"
 
+CLONE_REPO_SRC="$TARGET_REPO/04_Sense_Hat/clone_repo.py"
 CLONE_REPO_LINK="$BIN_DIR/clone_repo.py"
+
+SHOWIP_SRC="$TARGET_REPO/04_Sense_Hat/showIP.py"
 SHOWIP_LINK="$BIN_DIR/showIP.py"
+
+CLEANUP_SRC="$TARGET_REPO/../delete_pycache.sh"
+CLEANUP_LINK="$BIN_DIR/cleanup"
+
+SBB_UHR_SRC="$TARGET_REPO/06_Bahnhofuhr/Python_On_RaspberryPi/Bahnhof_MutterUhr.py"
+SBB_UHR_LINK="$BIN_DIR/Bahnhof_MutterUhr.py"
+
+SCHALTUHR_SRC="$TARGET_REPO/05_Schaltuhren/Schaltuhr_for_one_Relais/run.sh"
+SCHALTUHR_LINK="$BIN_DIR/Schaltuhr_one_relais"
 
 # 1. ~/bin erstellen falls nicht vorhanden
 mkdir -p "$BIN_DIR"
@@ -27,6 +37,27 @@ if [ ! -L "$SHOWIP_LINK" ]; then
     echo "🔗 Link erstellt: $SHOWIP_LINK -> $SHOWIP_SRC"
 else
     echo "ℹ️ Link $SHOWIP_LINK existiert bereits. Überspringe."
+fi
+
+if [ ! -L "$CLEANUP_LINK" ]; then
+    ln -s "$CLEANUP_SRC" "$CLEANUP_LINK"
+    echo "🔗 Link erstellt: $CLEANUP_LINK -> $CLEANUP_SRC"
+else
+    echo "ℹ️ Link $CLEANUP_LINK existiert bereits. Überspringe."
+fi
+
+if [ ! -L "$SBB_UHR_LINK" ]; then
+    ln -s "$SBB_UHR_SRC" "$SBB_UHR_LINK"
+    echo "🔗 Link erstellt: $SBB_UHR_LINK -> $SBB_UHR_SRC"
+else
+    echo "ℹ️ Link $SBB_UHR_LINK existiert bereits. Überspringe."
+fi
+
+if [ ! -L "$SCHALTUHR_LINK" ]; then
+    ln -s "$SCHALTUHR_SRC" "$SCHALTUHR_LINK"
+    echo "🔗 Link erstellt: $SCHALTUHR_LINK -> $SCHALTUHR_SRC"
+else
+    echo "ℹ️ Link $SCHALTUHR_LINK existiert bereits. Überspringe."
 fi
 
 # 3. Crontab-Eintrag vorbereiten
