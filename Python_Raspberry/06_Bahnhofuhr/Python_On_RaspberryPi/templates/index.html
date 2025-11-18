@@ -61,7 +61,7 @@
 				</div>
 
                 </center>
-      <h2 class="mb-4">💡 Lampensteuerung</h2>
+      <!-- <h2 class="mb-4">💡 Lampensteuerung</h2> -->
 
       <form action="{{ url_for('toggle_lampe') }}" method="post">
         {% if lampe_an %}
@@ -75,15 +75,21 @@
         {% endif %}
       </form>
 
-	<h2 class="mb-4">Schaltuhr auf Port 5003</h2>
+	<a target="_new" id="link5003" href="#">Schaltuhr </a>
+	<script>
+	  const link = document.getElementById('link5003');
+	  link.href = `${window.location.protocol}//${window.location.hostname}:5003/`;
+	</script>
 
 
       <!-- JSON Status Button -->
+	  <!--
       <form action="{{ url_for('status_JSON') }}" method="get" class="mt-4">
         <button type="submit" class="btn btn-outline-primary btn-lg">
           Status als JSON abrufen
         </button>
       </form>
+	  -->
 
     </div>
   </div>
