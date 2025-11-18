@@ -7,9 +7,9 @@ TARGET_REPO="../Waltis_Repo_Clone/RaspberryPi4PiPlates/Python_Raspberry"
 # Definition der Links als "Quelle:Ziel"
 LINKS=(
     "$TARGET_REPO/04_Sense_Hat/clone_repo.py:$BIN_DIR/clone_repo.py"
-    "$TARGET_REPO/04_Sense_Hat/showIP.py:$BIN_DIR/showIP.py"
+    "$TARGET_REPO/04_Sense_Hat/showIP.py:$BIN_DIR/showIP"
     "$TARGET_REPO/../delete_pycache.sh:$BIN_DIR/cleanup"
-    "$TARGET_REPO/06_Bahnhofuhr/Python_On_RaspberryPi/Bahnhof_MutterUhr.py:$BIN_DIR/Bahnhof_MutterUhr.py"
+    "$TARGET_REPO/06_Bahnhofuhr/Python_On_RaspberryPi/Bahnhof_MutterUhr.py:$BIN_DIR/Bahnhof_MutterUhr"
     "$TARGET_REPO/05_Schaltuhren/Schaltuhr_for_one_Relais/run.sh:$BIN_DIR/Schaltuhr_one_relais"
 )
 
@@ -38,9 +38,9 @@ done
 
 # Liste der Crontab-Einträge
 CRON_ENTRIES=(
-    "@reboot /usr/bin/python $SHOWIP_LINK                       > /dev/null 2>&1 &"
-    "# @reboot /usr/bin/python $BIN_DIR/Bahnhof_MutterUhr.py    >> /home/pi/logs/mutter_uhr.log 2>&1 &"
-	"# @reboot /usr/bin/python $BIN_DIR/Schaltuhr_one_relais.py >> /home/pi/logs/schaltuhr.log  2>&1 &"
+    "@reboot /usr/bin/python $BIN_DIR/showIP                 > /dev/null 2>&1 &"
+    "# @reboot /usr/bin/python $BIN_DIR/Bahnhof_MutterUhr    >> /home/pi/logs/mutter_uhr.log 2>&1 &"
+	"# @reboot                 $BIN_DIR/Schaltuhr_one_relais >> /home/pi/logs/schaltuhr.log  2>&1 &"
 )
 
 # Marker, damit Einträge sauber wiedererkannt werden
