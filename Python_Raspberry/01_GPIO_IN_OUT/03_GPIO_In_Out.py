@@ -15,22 +15,24 @@
 # 05-Dec-2023   Dylan Egger       Initial Version
 # 09-Dec-2023   Walter Rothlin    Integrated in Moodle course
 # 03-Aug-2025   Walter Rothlin    Moved to seperate Repository
-#
+# 27-Jul-2026   Walter Rothlin    Changes for Levin Hofmann
 # ------------------------------------------------------------------
 import time
 import RPi.GPIO as GPIO
+
+GREEN_LED_PIN = 13
+TASTER_PIN = 5
 
 #gpio setup
 GPIO.setmode(GPIO.BCM)   # sagt welcher gpio modus gebraucht wird
 GPIO.setwarnings(False)
 
-GPIO.setup(2, GPIO.IN)   # definiert gpio pin 2 als input
-
-GPIO.setup(3, GPIO.OUT)  # definiert gpio pin 3 als output
+GPIO.setup(TASTER_PIN, GPIO.IN)      # definiert gpio TASTER_PIN als input
+GPIO.setup(GREEN_LED_PIN, GPIO.OUT)  # definiert gpio GREEN_LED_PIN als output
 
 while True:
-    if GPIO.input(2) == 0:
-        GPIO.output(3, GPIO.LOW)   # setzt pin 3 auf HIGH also 3.3v
+    if GPIO.input(TASTER_PIN) == 0:
+        GPIO.output(GREEN_LED_PIN, GPIO.LOW)   # setzt GREEN_LED_PIN auf HIGH also 3.3v
         time.sleep(1)              # wartet 1s
-        GPIO.output(3, GPIO.HIGH)  # setzt pin 3 auf LOW also 0v
+        GPIO.output(GREEN_LED_PIN, GPIO.HIGH)  # setzt GREEN_LED_PIN auf LOW also 0v
         time.sleep(1)              # wartet 1s

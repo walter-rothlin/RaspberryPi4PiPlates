@@ -13,7 +13,8 @@
 #
 # History:
 # 28-Sep-2025   Walter Rothlin    Initial Version
-
+# 27-Jul-2026   Walter Rothlin    Changes for Levin Hofmann
+#
 # ------------------------------------------------------------------
 import time
 import RPi.GPIO as GPIO

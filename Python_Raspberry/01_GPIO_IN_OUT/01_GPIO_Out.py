@@ -15,21 +15,33 @@
 # 05-Dec-2023   Dylan Egger       Initial Version
 # 09-Dec-2023   Walter Rothlin    Integrated in Moodle course
 # 03-Aug-2025   Walter Rothlin    Moved to seperate Repository
+# 27-Jul-2026   Walter Rothlin    Changes for Levin Hofmann
 #
 # ------------------------------------------------------------------
 
 import time
 import RPi.GPIO as GPIO
 
-#gpio setup
-GPIO.setmode(GPIO.BCM) # sagt welcher gpio modus gebraucht wird
+RED_LED_PIN = 6
+GREEN_LED_PIN = 13
+TASTER_PIN = 5
+
+# gpio setup
+GPIO.setmode(GPIO.BCM)  # sagt welcher gpio modus gebraucht wird
 GPIO.setwarnings(False)
 
-GPIO.setup(3, GPIO.OUT) # definiert gpio pin 3 als output
+GPIO.setup(RED_LED_PIN, GPIO.OUT)  # definiert gpio pin RED_LED_PIN als output
+GPIO.setup(GREEN_LED_PIN, GPIO.OUT)  # definiert gpio pin GREEN_LED_PIN als output
 
-#loop
+# loop
 while True:
-    GPIO.output(3, GPIO.HIGH) # setzt pin 3 auf HIGH also 3.3v
-    time.sleep(1)             # wartet 1s
-    GPIO.output(3, GPIO.LOW)  # setzt pin 3 auf LOW also 0v
-    time.sleep(1)             # wartet 1s
+    print(f"Set GPIO {RED_LED_PIN} to High")
+    GPIO.output(RED_LED_PIN, GPIO.HIGH)  # setzt pin RED_LED_PIN auf HIGH also 3.3v
+    # GPIO.output(GREEN_LED_PIN, GPIO.LOW)  # setzt pin GREEN_LED_PIN auf LOW also 0v
+    time.sleep(1)  # wartet 1s
+
+    print(f"Set GPIO {RED_LED_PIN} to Low")
+    GPIO.output(RED_LED_PIN, GPIO.LOW)  # setzt pin RED_LED_PIN auf LOW also 0v
+    # GPIO.output(GREEN_LED_PIN, GPIO.HIGH) # setzt pin GREEN_LED_PIN auf HIGH also 3.3v
+
+    time.sleep(1)  # wartet 1s

@@ -9,7 +9,8 @@
 # Autor: Walter Rothlin
 #
 # History:  
-# 03-Aug-2025   Walter Rothlin      Initial Version
+# 03-Aug-2025   Walter Rothlin    Initial Version
+# 27-Jul-2026   Walter Rothlin    Changes for Levin Hofmann
 # ------------------------------------------------------------------
 import RPi.GPIO as GPIO
 import time
@@ -18,16 +19,16 @@ import time
 Varianten der GPIO PIN Definition
 ---------------------------------
 GPIO.setmode(GPIO.BOARD)  # Pysische Board PIN Nr
-GPIO.setup(11, GPIO.OUT)  # Nutzt physischen Pin 11 => GPIO17
+GPIO.setup(38, GPIO.OUT)  # Nutzt physischen Pin 38 => GPIO20
 
 GPIO.setmode(GPIO.BCM)    # BCM Broadcom SOC-Nummerierung
-GPIO.setup(17, GPIO.OUT)  # Nutzt GPIO17 => physisch Pin 11
+GPIO.setup(20, GPIO.OUT)  # Nutzt GPIO20 => physisch Pin 38
 '''
 
 
 
 GPIO.setmode(GPIO.BCM)          # Verwende das physische Pin-Layout (BOARD) oder BCM (GPIO-Nummer)
-RELAY_PIN = 17                  # GPIO-Nummer, an dem das Relais angeschlossen ist
+RELAY_PIN = 20                  # GPIO-Nummer, an dem das Relais angeschlossen ist
 GPIO.setup(RELAY_PIN, GPIO.OUT) # GPIO vorbereiten
 
 # Relais einschalten (je nach Modul LOW oder HIGH – hier gehen wir von LOW-Aktiv aus)
