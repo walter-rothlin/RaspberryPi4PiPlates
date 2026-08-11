@@ -1,0 +1,518 @@
+```html
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Boiler Steuerung</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <style>
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 700px;
+        }
+
+        .card {
+            margin-top: 30px;
+            border-radius: 15px;
+        }
+
+        .power-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .status-value {
+            font-weight: bold;
+        }
+
+        #gpio {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="card shadow">
+
+        <div class="card-header text-center">
+
+            <h2>🔥 Boiler Steuerung</h2>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <!-- Status ------------------------------------ -->
+
+            <div class="row mb-3">
+
+                <div class="col-6">
+                    <strong>Status</strong>
+                </div>
+
+                <div class="col-6 text-end">
+                    <span id="running"
+                          class="badge bg-secondary">
+                        STOPPED
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- GPIO ------------------------------------- -->
+
+            <div class="row mb-3">
+
+                <div class="col-6">
+                    <strong>GPIO</strong>
+                </div>
+
+                <div class="col-6 text-end">
+                    <span id="gpio">LOW</span>
+                </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- Leistung --------------------------------- -->
+
+            <div class="text-center">
+
+                <div>
+                    <strong>Leistung</strong>
+                </div>
+
+                <div class="power-value">
+                    <span id="powerValue">0</span> %
+                </div>
+
+            </div>
+
+
+            <input
+                type="range"
+                class="form-range"
+                id="powerSlider"
+                min="0"
+                max="100"
+                step="1"
+                value="0">
+
+            <div class="d-flex justify-content-between">
+
+                <span>0 %</span>
+                <span>50 %</span>
+                <span>100 %</span>
+
+            </div>
+
+
+            <div class="d-grid mt-3">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="setPower()">
+
+                    Leistung übernehmen
+
+                </button>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- Zykluszeit ------------------------------- -->
+
+            <div class="mb-3">
+
+                <label for="cycle"
+                       class="form-label">
+
+                    Zykluszeit
+
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="cycle"
+                        min="1"
+                        step="1"
+                        value="60">
+
+                    <span class="input-group-text">
+                        Sekunden
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="d-grid">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="setCycle()">
+
+                    Zykluszeit übernehmen
+
+                </button>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- Start / Stop ----------------------------- -->
+
+            <div class="row g-2">
+
+                <div class="col-6">
+
+                    <button
+                        class="btn btn-success w-100"
+                        onclick="startBoiler()">
+
+                        ▶ Start
+
+                    </button>
+
+                </div>
+
+
+                <div class="col-6">
+
+                    <button
+                        class="btn btn-danger w-100"
+                        onclick="stopBoiler()">
+
+                        ■ Stop
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- Meldungen -------------------------------- -->
+
+            <div id="message"
+                 class="alert d-none">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+// --------------------------------------------------------
+// Hilfsfunktion: Meldung anzeigen
+// --------------------------------------------------------
+function showMessage(text, type = "success") {
+
+    const message = document.getElementById("message");
+
+    message.className = "alert alert-" + type;
+    message.innerText = text;
+
+}
+
+
+// --------------------------------------------------------
+// Status aktualisieren
+// --------------------------------------------------------
+async function updateStatus() {
+
+    try {
+
+        const response =
+            await fetch("/status");
+        const data =
+            await response.json();
+
+
+        // Running
+        const running =
+            document.getElementById("running");
+        if (data.running) {
+            running.innerText = "RUNNING";
+            running.className =
+                "badge bg-success";
+        } else {
+            running.innerText = "STOPPED";
+            running.className =
+                "badge bg-secondary";
+        }
+
+
+        // GPIO
+        const gpio =
+            document.getElementById("gpio");
+        if (data.gpio) {
+            gpio.innerText = "HIGH";
+            gpio.className =
+                "text-danger";
+        } else {
+            gpio.innerText = "LOW";
+            gpio.className =
+                "text-secondary";
+
+        }
+
+        // Power
+        const power =
+            Math.round(data.power * 100);
+
+        document.getElementById(
+            "powerValue"
+        ).innerText = power;
+
+        document.getElementById(
+            "powerSlider"
+        ).value = power;
+
+        // Cycle
+        document.getElementById(
+            "cycle"
+        ).value = data.cycle_time;
+
+    }
+
+    catch (error) {
+        showMessage(
+            "Fehler beim Lesen des Status",
+            "danger"
+        );
+    }
+}
+
+
+// --------------------------------------------------------
+// Leistung setzen
+// --------------------------------------------------------
+async function setPower() {
+    const power =
+        Number(
+            document.getElementById(
+                "powerSlider"
+            ).value
+        ) / 100;
+
+
+    try {
+        const response =
+            await fetch(
+                "/power",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        power: power
+                    })
+                }
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+        showMessage(
+            "Leistung wurde übernommen"
+        );
+        updateStatus();
+    }
+
+    catch (error) {
+        showMessage(
+            "Fehler beim Setzen der Leistung",
+            "danger"
+        );
+    }
+}
+
+
+// --------------------------------------------------------
+// Zykluszeit setzen
+// --------------------------------------------------------
+async function setCycle() {
+    const cycle =
+        Number(
+            document.getElementById(
+                "cycle"
+            ).value
+        );
+
+    if (cycle <= 0) {
+        showMessage(
+            "Zykluszeit muss grösser als 0 sein",
+            "danger"
+        );
+        return;
+    }
+
+    try {
+        const response =
+            await fetch(
+                "/cycle",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        cycle: cycle
+                    })
+                }
+            );
+        if (!response.ok)
+            throw new Error();
+        showMessage(
+            "Zykluszeit wurde übernommen"
+        );
+        updateStatus();
+    }
+    catch (error) {
+        showMessage(
+            "Fehler beim Setzen der Zykluszeit",
+            "danger"
+        );
+    }
+}
+
+
+// --------------------------------------------------------
+// Boiler starten
+// --------------------------------------------------------
+async function startBoiler() {
+    try {
+        const response =
+            await fetch(
+                "/start",
+                {
+                    method: "POST"
+                }
+            );
+        if (!response.ok)
+            throw new Error();
+        showMessage(
+            "Boilersteuerung gestartet"
+        );
+        updateStatus();
+    }
+    catch (error) {
+        showMessage(
+            "Fehler beim Starten",
+            "danger"
+        );
+    }
+}
+
+
+// --------------------------------------------------------
+// Boiler stoppen
+// --------------------------------------------------------
+async function stopBoiler() {
+    try {
+        const response =
+            await fetch(
+                "/stop",
+                {
+                    method: "POST"
+                }
+            );
+        if (!response.ok)
+            throw new Error();
+        showMessage(
+            "Boilersteuerung gestoppt"
+        );
+        updateStatus();
+    }
+    catch (error) {
+        showMessage(
+            "Fehler beim Stoppen",
+            "danger"
+        );
+    }
+}
+
+
+// --------------------------------------------------------
+// Slider live anzeigen
+// --------------------------------------------------------
+document
+    .getElementById("powerSlider")
+    .addEventListener(
+        "input",
+        function () {
+
+            document.getElementById(
+                "powerValue"
+            ).innerText = this.value;
+
+        }
+    );
+
+
+// --------------------------------------------------------
+// Initialisierung
+// --------------------------------------------------------
+updateStatus();
+
+// Status alle 2 Sekunden aktualisieren
+setInterval(
+    updateStatus,
+    2000
+);
+
+
+</script>
+</body>
+</html>
+

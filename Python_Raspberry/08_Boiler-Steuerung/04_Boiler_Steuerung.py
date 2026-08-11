@@ -20,8 +20,7 @@
 import threading
 import time
 
-from flask import Flask, jsonify, request
-
+from flask import Flask, jsonify, request, render_template
 import RPi.GPIO as GPIO
 
 '''
@@ -209,7 +208,6 @@ class BoilerController:
 # --------------------------------------------------------
 # Flask
 # --------------------------------------------------------
-
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -219,18 +217,21 @@ controller = BoilerController(
 
 app = Flask(__name__)
 
+@app.route("/")
+def index():
+    return render_template(
+        "boiler.html",
+        status=controller.get_status()
+    )
 
 @app.route("/status")
 def status():
-
     return jsonify(controller.get_status())
 
 
 @app.route("/start", methods=["POST"])
 def start():
-
     controller.start()
-
     return jsonify(
         success=True,
         status=controller.get_status())
