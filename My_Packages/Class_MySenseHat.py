@@ -20,6 +20,7 @@
 # 08-Dec-2024   Walter Rothlin      Added additonal Test-Cases
 # 09-Dec-2024   Walter Rothlin      Added simpler version for set_pixel()
 # 17-Dec-2024   Walter Rothlin      round(float(rgb)) values
+# 17-Aug-2026   Walter Rothlin      Modified for HBU PY2
 
 # todo: defining the grid (xmin..xmax, ymin..ymax) and returns a list of visible points for a line
 #       an element of the list contains x, y and a color tuple
@@ -51,6 +52,34 @@ def get_status_string(actual_log_level, log_level_msg, message, with_timestamp=T
 def print_if_not_empty(message):
     if message != '':
         print(message)
+
+def convertToInt(value):
+    has_a_parameter_error = False
+    if type(value) is int:
+        pass
+    elif type(value) is float:
+        value = round(value)
+    elif type(value) is str:
+        try:
+            value = value.replace(',', '.').replace(' ', '')
+            value = round(float(value))
+        except ValueError:
+            has_a_parameter_error = True
+    return value, has_a_parameter_error
+
+def convertToInt_ByPatric(value):
+    has_a_parameter_error = False
+    if isinstance(value, int):
+        pass
+    elif isinstance(value, float):
+        value = round(value)
+    elif isinstance(value, str):
+        try:
+            value = value.replace(',', '.').replace(' ', '')
+            value = round(float(value))
+        except ValueError:
+            has_a_parameter_error = True
+    return value, has_a_parameter_error
 
 
 def colorHex_to_rgb(color):
@@ -237,34 +266,8 @@ class MySenseHat(SenseHat):
 
         has_a_parameter_error = False
         if False:
-            # step-by-step version to handle the different types of the coordinates
-            if type(x) is int:
-                pass
-            elif type(x) is float:
-                x = round(x)
-            elif type(x) is str:
-                try:
-                    x = x.replace(',', '.').replace(' ', '')
-                    x = round(float(x))
-                except ValueError:
-                    print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR,f'set_pixel(x={x}, y={y}) Conversion failed!'))
-                    has_a_parameter_error = True
-            else:
-                has_a_parameter_error = True
-
-            if isinstance(y, int):
-                pass
-            elif isinstance(y, float):
-                y = round(y)
-            elif isinstance(y, str):
-                try:
-                    y = y.replace(',', '.').replace(' ', '')
-                    y = round(float(y))
-                except ValueError:
-                    print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR,f' set_pixel(x={x}, y={y}) Conversion failed!'))
-                    has_a_parameter_error = True
-            else:
-                has_a_parameter_error = True
+            x, has_convertion_error = convertToInt_ByPatric(x)
+            y, has_convertion_error = convertToInt(y)
         else:
             # simpler version to handle the different types of the coordinates    
             try:
@@ -273,15 +276,15 @@ class MySenseHat(SenseHat):
                 x = int(round(float(x)))
                 y = int(round(float(y)))
             except ValueError:
-                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR,f'set_pixel(x={x}, y={y}) Conversion failed!!' ))
+                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR, f'set_pixel(x={x}, y={y}) Conversion failed!!' ))
                 has_a_parameter_error = True
 
         # Checking the coordinates and calling the original set_pixel() method from the super class
         if not has_a_parameter_error and (0 <= x <= 7) and (0 <= y <= 7):
-            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO,f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})\n'))
+            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})\n'))
             super().set_pixel(x, y, int(round(float(r))), int(round(float(g))), int(round(float(b))))
         else:
-            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING,f'set_pixel(x={x}, y={y}) Coordinates out of range!\n'))
+            print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING, f'set_pixel(x={x}, y={y}) Coordinates out of range!\n'))
 
 
 
@@ -429,7 +432,7 @@ def Test_set_pixel(sense, do_test=False):
             print('... done')
 
 
-def Test_draw_line(sense, do_test=True):
+def Test_draw_line(sense, do_test=False):
         if do_test:
             old_state = sense.debug_mode 
             sense.set_debug_mode = LogLevel.ALLWAYS
