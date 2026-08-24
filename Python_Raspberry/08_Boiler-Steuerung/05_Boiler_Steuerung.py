@@ -19,7 +19,7 @@
 
 # ------------------------------------------------------------------
 # Name  : 02_Boiler_Steuerung.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/08_Boiler_Steuerung/02_Boiler_Steuerung.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/Python_Raspberry/08_Boiler-Steuerung/05_Boiler_Steuerung.py
 #
 # Description: GPIO simple
 #
