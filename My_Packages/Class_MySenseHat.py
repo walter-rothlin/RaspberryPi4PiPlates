@@ -2,7 +2,7 @@
 
 # ------------------------------------------------------------------
 # Name  : Class_SenseHat.py
-# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/refs/heads/main/My_Packages/Class_MySenseHat.py
+# Source: https://raw.githubusercontent.com/walter-rothlin/RaspberryPi4PiPlates/master/My_Packages/Class_MySenseHat.py
 #
 # Description: Sub-Class of SenseHat
 #
@@ -233,6 +233,75 @@ class MySenseHat(SenseHat):
             print(f'2) {args}  -->  {bg_color}')
         super().clear(bg_color)
 
+    def clear_stucture(color=(0, 0, 0), *values, **keyValues):
+        """
+        Clear or set a color.
+
+        The function can be called without arguments to use black as
+        the default color, or with an RGB color specified in different
+        formats.
+
+        Examples:
+            clear()
+                Use black: (0, 0, 0).
+
+            clear((255, 128, 0))
+                Set the color using an RGB tuple.
+
+            clear(color=(255, 128, 0))
+                Set the color using the named `color` argument.
+
+            clear(r=255, g=255, b=0)
+                Set the color using named RGB components.
+
+            clear(128, 255, 255)
+                Set the color using three positional RGB components.
+
+        Args:
+            color:
+                An RGB tuple or the first RGB component. Defaults to
+                (0, 0, 0).
+
+            Alternatively, the RGB values can be passed individually:
+
+            r: 0-255 integer representing the red component.
+            g: 0-255 integer representing the green component.
+            b: 0-255 integer representing the blue component.
+
+        Returns:
+            None.
+        """
+
+        print(f"""
+           clear(color, *values), **keyValues) ===> clear(color={color}, *values={values}, **keyValues={keyValues})
+                type(color)={type(color)}
+                type(*values)={type(values)}
+                type(**keyValues)={type(keyValues)}
+            """)
+
+        if isinstance(color, tuple):
+            print(f"1) Color: {color}")
+
+        elif 'color' in keyValues:
+            print(f"2) Color: {keyValues['color']}")
+
+        elif all(k in keyValues for k in ('r', 'g', 'b')):
+            print(f"3) Color: ({keyValues['r']}, {keyValues['g']}, {keyValues['b']})")
+
+        elif color is not None and len(values) == 2:
+            print(f"4) Color: ({color}, {values[0]}, {values[1]})")
+
+        else:
+            print("Keine gültige Farbe angegeben")
+
+        print()
+
+    def TEST__clear_stucture(self):
+        self.clear_stucture(color=(255, 128, 0))
+        self.clear_stucture(r=255, g=255, b=0)
+        self.clear_stucture((255, 0, 128))
+        self.clear_stucture(128, 255, 255)
+        self.clear_stucture()
 
     def set_pixel_Djordje(self, x, y, *args, **kwargs):
         '''
