@@ -94,30 +94,50 @@ def colorHex_to_rgb(color):
     Returns:
         tuple: A tuple (R, G, B) where R, G, and B are integers from 0 to 255.
     """
+    error_color_r = 255
+    error_color_g = 0
+    error_color_b = 0
+    r = 0
+    g = 0
+    b = 0
+
     # If color is already a tuple, return it as-is
+    if isinstance(color, str):
+        color = color.replace('', '').replace(' ', '').replace("'", '')
+        if color.startswith('#'):
+            color = color.lstrip('#')
+            if len(color) != 6:
+                r = error_color_r
+                g = error_color_g
+                b = error_color_b
+            else:
+                # Convert hex to decimal
+                r = int(color[0:2], 16)
+                g = int(color[2:4], 16)
+                b = int(color[4:6], 16)
+
+        elif color.startswith('(') and color.endswith(')'):
+            color = color[1:-1]
+            color_list = color.split(',')
+            if len(color_list) == 3:
+                r = int(color_list[0].strip())
+                g = int(color_list[1].strip())
+                b = int(color_list[2].strip())
+
+
     if isinstance(color, tuple):
         if len(color) == 3 and all(isinstance(c, int) and 0 <= c <= 255 for c in color):
-            return color
+            r = color[0]
+            g = color[1]
+            b = color[2]
+
         else:
-            raise ValueError("Invalid RGB tuple. Must have three integers between 0 and 255.")
+            r = int(color_list[0].strip())
+            g = int(color_list[1].strip())
+            b = int(color_list[2].strip())
     
-    # Remove '#' if present for a hex string
-    if isinstance(color, str):
-        color = color.lstrip('#')
-        
-        # Ensure the hex color has exactly 6 characters
-        if len(color) != 6:
-            raise ValueError("Hex color must be 6 characters long.")
-        
-        # Convert hex to decimal
-        r = int(color[0:2], 16)
-        g = int(color[2:4], 16)
-        b = int(color[4:6], 16)
-        
-        return (r, g, b)
-    
-    # If the input is neither a string nor a tuple, raise an error
-    raise TypeError("Color must be a hex string or an RGB tuple.")
+
+    return (r, g, b)
 
 
 def rgb_to_colorHex(color):
