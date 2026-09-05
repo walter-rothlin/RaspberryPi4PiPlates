@@ -40,6 +40,136 @@ class LogLevel(Enum):
     FATAL = 4
     NO_TRACE = 9
 
+# Farb-Definitionen
+# =================
+red      = (255,   0,   0)
+green    = (  0, 255,   0)
+blue     = (  0,   0, 255)
+yellow   = (255, 255,   0)
+cyan     = (  0, 255, 255)
+mangenta = (255,   0, 255)
+black    = (  0,   0,   0)
+white    = (255, 255, 255)
+grey     = (100, 100, 100)
+
+colors = [red, green, blue, yellow, cyan, mangenta, black, white, grey]
+colors_dict = {
+    'red'      : red,
+    'green'    : green,
+    'blue'     : blue,
+    'yellow'   : yellow,
+    'cyan'     : cyan,
+    'mangenta' : mangenta,
+    'black'    : black,
+    'white'    : white,
+    'grey'     : grey,
+}
+
+farben = {
+    "rot": "#FF0000",
+    "red": "#FF0000",
+
+    "grün": "#00FF00",
+    "green": "#00FF00",
+
+    "blau": "#0000FF",
+    "blue": "#0000FF",
+
+    "gelb": "#FFFF00",
+    "yellow": "#FFFF00",
+
+    "cyan": "#00FFFF",
+
+    "magenta": "#FF00FF",
+
+    "schwarz": "#000000",
+    "black": "#000000",
+
+    "weiß": "#FFFFFF",
+    "white": "#FFFFFF",
+
+    "grau": "#808080",
+    "gray": "#808080",
+    "grey": "#808080",
+
+    "orange": "#FFA500",
+
+    "braun": "#A52A2A",
+    "brown": "#A52A2A",
+
+    "pink": "#FFC0CB",
+
+    "violett": "#800080",
+    "purple": "#800080",
+
+    "limette": "#00FF00",
+    "lime": "#00FF00",
+
+    "dunkelgrün": "#006400",
+    "darkgreen": "#006400",
+
+    "dunkelblau": "#00008B",
+    "darkblue": "#00008B",
+
+    "dunkelrot": "#8B0000",
+    "darkred": "#8B0000",
+
+    "türkis": "#40E0D0",
+    "turquoise": "#40E0D0",
+
+    "himmelblau": "#87CEEB",
+    "skyblue": "#87CEEB",
+
+    "olivgrün": "#808000",
+    "olive": "#808000",
+
+    "gold": "#FFD700",
+
+    "silber": "#C0C0C0",
+    "silver": "#C0C0C0",
+
+    "beige": "#F5F5DC",
+
+    "creme": "#FFFDD0",
+    "cream": "#FFFDD0"
+}
+
+
+def farbname_to_rgb(farbname):
+    hex_code = farbname_to_hexcode(farbname)
+    return hex_to_rgb(hex_code)
+
+
+def farbname_to_hexcode(farbname):
+    farbname = farbname.lower().replace(' ', '')
+
+    hexcode = farben.get(farbname)
+
+    if hexcode is None:
+        print(f"ERROR: {farbname} nicht gefunden")
+        return None
+
+    return hexcode
+
+
+def hex_to_rgb(hex_code):
+    hex_code = hex_code.upper().replace(' ', '').lstrip("#")
+
+    if len(hex_code) == 6:
+        r = 0
+        g = 0
+        b = 0
+        try:
+            r = int(hex_code[0:2], 16)
+            g = int(hex_code[2:4], 16)
+            b = int(hex_code[4:6], 16)
+            return (r, g, b)
+        except ValueError:
+            print(f"ERROR: {hex_code} ist keine Hex-Zahl")
+            return (r, g, b)
+    else:
+        print(f"ERROR: {hex_code} ist keine 6-stellige Hex Zahl")
+        return (r, g, b)
 def get_status_string(actual_log_level, log_level_msg, message, with_timestamp=True):
     timestamp_str = ''
     if with_timestamp:
