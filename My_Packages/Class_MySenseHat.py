@@ -21,6 +21,7 @@
 # 09-Dec-2024   Walter Rothlin      Added simpler version for set_pixel()
 # 17-Dec-2024   Walter Rothlin      round(float(rgb)) values
 # 17-Aug-2026   Walter Rothlin      Modified for HBU PY2
+# 31-Aug-2026   Walter Rothlin      Modified with Levin Hoffmann for BSFH
 
 # todo: defining the grid (xmin..xmax, ymin..ymax) and returns a list of visible points for a line
 #       an element of the list contains x, y and a color tuple
@@ -32,6 +33,43 @@ from enum import Enum
 from datetime import datetime
 import time
 
+
+# =====================================
+# String to int/float
+# =====================================
+def convertToInt(value):
+    has_a_parameter_error = False
+    if type(value) is int:
+        pass
+    elif type(value) is float:
+        value = round(value)
+    elif type(value) is str:
+        try:
+            value = value.replace(',', '.').replace(' ', '')
+            value = round(float(value))
+        except ValueError:
+            has_a_parameter_error = True
+    return value, has_a_parameter_error
+
+
+def convertToInt_ByPatric(value):
+    has_a_parameter_error = False
+    if isinstance(value, int):
+        pass
+    elif isinstance(value, float):
+        value = round(value)
+    elif isinstance(value, str):
+        try:
+            value = value.replace(',', '.').replace(' ', '')
+            value = round(float(value))
+        except ValueError:
+            has_a_parameter_error = True
+    return value, has_a_parameter_error
+
+
+# =====================================
+# Logging and log-Levels
+# =====================================
 class LogLevel(Enum):
     ALLWAYS = 0
     INFO = 1
@@ -40,99 +78,98 @@ class LogLevel(Enum):
     FATAL = 4
     NO_TRACE = 9
 
-# Farb-Definitionen
-# =================
-red      = (255,   0,   0)
-green    = (  0, 255,   0)
-blue     = (  0,   0, 255)
-yellow   = (255, 255,   0)
-cyan     = (  0, 255, 255)
-mangenta = (255,   0, 255)
-black    = (  0,   0,   0)
-white    = (255, 255, 255)
-grey     = (100, 100, 100)
+
+def get_status_string(actual_log_level, log_level_msg, message, with_timestamp=True):
+    timestamp_str = ''
+    if with_timestamp:
+        timestamp_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if log_level_msg.value >= actual_log_level.value:
+        return f'{timestamp_str} {log_level_msg.name}: {message}'
+    else:
+        return ''
+
+
+def print_if_not_empty(message):
+    if message != '':
+        print(message)
+
+
+# =====================================
+# Farb-Definitionen and color functions
+# =====================================
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+cyan = (0, 255, 255)
+mangenta = (255, 0, 255)
+black = (0, 0, 0)
+white = (255, 255, 255)
+grey = (100, 100, 100)
 
 colors = [red, green, blue, yellow, cyan, mangenta, black, white, grey]
 colors_dict = {
-    'red'      : red,
-    'green'    : green,
-    'blue'     : blue,
-    'yellow'   : yellow,
-    'cyan'     : cyan,
-    'mangenta' : mangenta,
-    'black'    : black,
-    'white'    : white,
-    'grey'     : grey,
+    'red': red,
+    'green': green,
+    'blue': blue,
+    'yellow': yellow,
+    'cyan': cyan,
+    'mangenta': mangenta,
+    'black': black,
+    'white': white,
+    'grey': grey,
 }
 
 farben = {
     "rot": "#FF0000",
     "red": "#FF0000",
-
     "grün": "#00FF00",
     "green": "#00FF00",
-
     "blau": "#0000FF",
     "blue": "#0000FF",
-
     "gelb": "#FFFF00",
     "yellow": "#FFFF00",
-
     "cyan": "#00FFFF",
-
     "magenta": "#FF00FF",
-
     "schwarz": "#000000",
     "black": "#000000",
-
     "weiß": "#FFFFFF",
     "white": "#FFFFFF",
-
+    "weiss": "#FFFFFF",
     "grau": "#808080",
     "gray": "#808080",
     "grey": "#808080",
-
     "orange": "#FFA500",
-
     "braun": "#A52A2A",
     "brown": "#A52A2A",
-
     "pink": "#FFC0CB",
-
     "violett": "#800080",
     "purple": "#800080",
-
     "limette": "#00FF00",
     "lime": "#00FF00",
-
     "dunkelgrün": "#006400",
     "darkgreen": "#006400",
-
     "dunkelblau": "#00008B",
     "darkblue": "#00008B",
-
     "dunkelrot": "#8B0000",
     "darkred": "#8B0000",
-
     "türkis": "#40E0D0",
     "turquoise": "#40E0D0",
-
     "himmelblau": "#87CEEB",
     "skyblue": "#87CEEB",
-
     "olivgrün": "#808000",
     "olive": "#808000",
-
     "gold": "#FFD700",
-
     "silber": "#C0C0C0",
     "silver": "#C0C0C0",
-
     "beige": "#F5F5DC",
-
     "creme": "#FFFDD0",
     "cream": "#FFFDD0"
 }
+
+
+def get_defined_farbnames():
+    return sorted(farben.keys())
 
 
 def farbname_to_rgb(farbname):
@@ -142,7 +179,6 @@ def farbname_to_rgb(farbname):
 
 def farbname_to_hexcode(farbname):
     farbname = farbname.lower().replace(' ', '')
-
     hexcode = farben.get(farbname)
 
     if hexcode is None:
@@ -170,49 +206,9 @@ def hex_to_rgb(hex_code):
     else:
         print(f"ERROR: {hex_code} ist keine 6-stellige Hex Zahl")
         return (r, g, b)
-def get_status_string(actual_log_level, log_level_msg, message, with_timestamp=True):
-    timestamp_str = ''
-    if with_timestamp:
-        timestamp_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if log_level_msg.value >= actual_log_level.value:
-        return f'{timestamp_str} {log_level_msg.name}: {message}'
-    else:
-        return ''
-
-def print_if_not_empty(message):
-    if message != '':
-        print(message)
-
-def convertToInt(value):
-    has_a_parameter_error = False
-    if type(value) is int:
-        pass
-    elif type(value) is float:
-        value = round(value)
-    elif type(value) is str:
-        try:
-            value = value.replace(',', '.').replace(' ', '')
-            value = round(float(value))
-        except ValueError:
-            has_a_parameter_error = True
-    return value, has_a_parameter_error
-
-def convertToInt_ByPatric(value):
-    has_a_parameter_error = False
-    if isinstance(value, int):
-        pass
-    elif isinstance(value, float):
-        value = round(value)
-    elif isinstance(value, str):
-        try:
-            value = value.replace(',', '.').replace(' ', '')
-            value = round(float(value))
-        except ValueError:
-            has_a_parameter_error = True
-    return value, has_a_parameter_error
 
 
-def colorHex_to_rgb(color):
+def color_to_rgb(color):
     """
     Converts a hexadecimal color string to an RGB tuple in decimal.
     If the input is already a tuple, it returns the tuple unchanged.
@@ -254,7 +250,6 @@ def colorHex_to_rgb(color):
                 g = int(color_list[1].strip())
                 b = int(color_list[2].strip())
 
-
     if isinstance(color, tuple):
         if len(color) == 3 and all(isinstance(c, int) and 0 <= c <= 255 for c in color):
             r = color[0]
@@ -265,7 +260,6 @@ def colorHex_to_rgb(color):
             r = int(color_list[0].strip())
             g = int(color_list[1].strip())
             b = int(color_list[2].strip())
-    
 
     return (r, g, b)
 
@@ -276,8 +270,8 @@ def rgb_to_colorHex(color):
     If the input is already a valid hex string, it returns it directly.
 
     Parameters:
-        color (tuple or str): Either an RGB tuple (R, G, B) where R, G, and B 
-                              are integers from 0 to 255, or a hexadecimal color 
+        color (tuple or str): Either an RGB tuple (R, G, B) where R, G, and B
+                              are integers from 0 to 255, or a hexadecimal color
                               string (e.g., '#FF5733' or 'FF5733').
 
     Returns:
@@ -296,12 +290,12 @@ def rgb_to_colorHex(color):
         # Ensure the input is a tuple with exactly three components
         if len(color) != 3:
             raise TypeError("RGB input must be a tuple with three elements (R, G, B).")
-        
+
         # Ensure each color component is within the valid range
         for c in color:
             if not (isinstance(c, int) and 0 <= c <= 255):
                 raise ValueError("RGB values must be integers between 0 and 255.")
-        
+
         # Convert RGB to hex
         return "#{:02X}{:02X}{:02X}".format(color[0], color[1], color[2])
 
@@ -310,20 +304,26 @@ def rgb_to_colorHex(color):
         raise TypeError("Input must be a hex string or an RGB tuple.")
 
 
+def TEST_color_functions(do_test=False):
+    if do_test:
+        print('TEST_color_functions...')
+        farb_list = get_defined_farbnames()
+        for aFarb in farb_list:
+            print(f'{aFarb:20s} --> {str(farbname_to_hexcode(aFarb)):15s} {str(farbname_to_rgb(aFarb)):20s} {hex_to_rgb(farbname_to_hexcode(aFarb))}')
+
+        farbname = input("Farbe:")
+        print(f'{farbname:20s} --> {farbname_to_hexcode(farbname)} {farbname_to_rgb(farbname)} {hex_to_rgb(farbname_to_hexcode(farbname))}')
+
+        print('TEST_color_functions...completed')
+
+
+# =====================================
+# Class MySenseHat
+# =====================================
 class MySenseHat(SenseHat):
     '''
     A subclass from SenseHat where set_pixel() has been overwritten and draw_line() added.
     '''
-    red = (255, 0, 0)
-    green = (0, 255, 0)
-    blue = (0, 0, 255)
-    yellow = (255, 255, 0)
-    magenta = (255, 0, 255)
-    cyan = (0, 255, 255)
-    white = (255, 255, 255)
-    grey = (100, 100, 100)
-    black = (0, 0, 0)
-
 
     # Initializer and setter/Getter and Properties
     # ============================================
@@ -342,12 +342,10 @@ class MySenseHat(SenseHat):
     def set_debug_mode(self, trace_level_on):
         self.__trace_level_on = trace_level_on
 
-
     def get_debug_mode(self):
         return self.__trace_level_on
 
     debug_mode = property(get_debug_mode, set_debug_mode)
-
 
     # Business Methods
     # ================
@@ -356,7 +354,7 @@ class MySenseHat(SenseHat):
         bg_color = self.__default_bg_color
         if args is not None and len(args) == 1:
             bg_color = args[0]
-            bg_color = colorHex_to_rgb(bg_color)
+            bg_color = color_to_rgb(bg_color)
             print(f'1) {args}  -->  {bg_color}')
         elif args is not None and len(args) == 3:
             bg_color = args
@@ -439,7 +437,7 @@ class MySenseHat(SenseHat):
         :param x: x-coordinate (0-7)
         :param y: y-coordinate (0-7)
         '''
-        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel_Djordje(self, x={x}, y={y})')) 
+        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel_Djordje(self, x={x}, y={y})'))
         try:
             x = round(float(x))
             y = round(float(y))
@@ -452,7 +450,6 @@ class MySenseHat(SenseHat):
         else:
             print(f"x or y value out of bounds: x={x}, y={y}")
 
-
     def set_pixel(self, x, y, r=None, g=None, b=None, pixel_color=None):
         '''
         Overwrites the set_pixel() method from the SenseHat class.
@@ -462,13 +459,13 @@ class MySenseHat(SenseHat):
         :param r: red color value (0-255)
         :param g: green color value (0-255)
         :param b: blue color value (0-255)
-        
+
         :param pixel_color: tuple with 3 color values (r, g, b)
 
         :return: None
         '''
 
-        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})')) 
+        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'set_pixel(self, x={x}, y={y}, r={r}, g={g}, b={b}, pixel_color={pixel_color})'))
 
         # Handle the different types of the function arguments
         if pixel_color is not None:
@@ -488,14 +485,14 @@ class MySenseHat(SenseHat):
             x, has_convertion_error = convertToInt_ByPatric(x)
             y, has_convertion_error = convertToInt(y)
         else:
-            # simpler version to handle the different types of the coordinates    
+            # simpler version to handle the different types of the coordinates
             try:
                 original_x = x
                 original_y = y
                 x = int(round(float(x)))
                 y = int(round(float(y)))
             except ValueError:
-                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR, f'set_pixel(x={x}, y={y}) Conversion failed!!' ))
+                print_if_not_empty(get_status_string(self.debug_mode, LogLevel.ERROR, f'set_pixel(x={x}, y={y}) Conversion failed!!'))
                 has_a_parameter_error = True
 
         # Checking the coordinates and calling the original set_pixel() method from the super class
@@ -504,9 +501,6 @@ class MySenseHat(SenseHat):
             super().set_pixel(x, y, int(round(float(r))), int(round(float(g))), int(round(float(b))))
         else:
             print_if_not_empty(get_status_string(self.debug_mode, LogLevel.WARNING, f'set_pixel(x={x}, y={y}) Coordinates out of range!\n'))
-
-
-
 
     def draw_line(self, x_start=0, y_start=0, x_end=7, y_end=7, r=255, g=255, b=255, draw_speed=0):
         '''
@@ -529,36 +523,36 @@ class MySenseHat(SenseHat):
         else:
             draw_speed = 0
 
-        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO,f'draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})'))
+        print_if_not_empty(get_status_string(self.debug_mode, LogLevel.INFO, f'draw_line(self, x1={x_start}, y1={y_start}, x2={x_end}, y2={y_end}, r={r}, g={g}, b={b}, draw_speed={draw_speed})'))
 
         if x_start == x_end:
             if y_start > y_end:
                 y_start, y_end = y_end, y_start
-            for y in range(round(y_start), round(y_end+1)):
+            for y in range(round(y_start), round(y_end + 1)):
                 self.set_pixel(x_start, y, r, g, b)
                 sleep(draw_speed)
         else:
             if x_start > x_end:
                 x_start, x_end = x_end, x_start
                 y_start, y_end = y_end, y_start
-            a = (y_start-y_end)/(x_start-x_end)
-            c = y_start - a*x_start
+            a = (y_start - y_end) / (x_start - x_end)
+            c = y_start - a * x_start
             if abs(a) >= 1:  # Steile Linie
                 if y_start > y_end:
                     y_start, y_end = y_end, y_start
-                for y in range(round(y_start), round(y_end+1)):
-                    x = (y - c)/a
+                for y in range(round(y_start), round(y_end + 1)):
+                    x = (y - c) / a
                     self.set_pixel(x, y, r, g, b)
                     sleep(draw_speed)
-            else: # Flache Linie
-                for x in range(round(x_start), round(x_end+1)):
-                    y = a*x + c
+            else:  # Flache Linie
+                for x in range(round(x_start), round(x_end + 1)):
+                    y = a * x + c
                     self.set_pixel(x, y, r, g, b)
                     sleep(draw_speed)
 
     # draw_line from Stefan_Scheuber
     # ==============================
-    def drawLine (self, x_start, y_start, x_end, y_end, forground_color = None, sleepTime=0):
+    def drawLine(self, x_start, y_start, x_end, y_end, forground_color=None, sleepTime=0):
         """
         Methode um Linien zu zeichnen
         :param x_start: x-Kordinate optimal zwischen (0-7)
@@ -568,38 +562,38 @@ class MySenseHat(SenseHat):
         :param y_end: y-Kordinate optimal zwischen (0-7)
 
         :param forground_color: optional tuple (r,g,b), ansonsten default_color
-        
+
         :param sleepTime: Zeit für das setzen einzelner Pixel
         """
-        if abs(x_start-x_end) > abs(y_start-y_end):
-            gradient_y = (y_end-y_start)/abs(x_end-x_start)
-            value_list = self.__calculatPoints(x_end,x_start)
-            liste_points = self.__calculateXY(x_start,y_start,value_list,gradient_y)
+        if abs(x_start - x_end) > abs(y_start - y_end):
+            gradient_y = (y_end - y_start) / abs(x_end - x_start)
+            value_list = self.__calculatPoints(x_end, x_start)
+            liste_points = self.__calculateXY(x_start, y_start, value_list, gradient_y)
         else:
-            gradient_x = (x_end-x_start)/abs(y_end-y_start)
-            value_list = self.__calculatPoints(y_end,y_start) 
-            liste_points = self.__calculateXY(x_start,y_start,value_list,gradient_x,False)
+            gradient_x = (x_end - x_start) / abs(y_end - y_start)
+            value_list = self.__calculatPoints(y_end, y_start)
+            liste_points = self.__calculateXY(x_start, y_start, value_list, gradient_x, False)
 
         for point in liste_points:
-            self.set_pixel(point['x'],point['y'],(forground_color))
+            self.set_pixel(point['x'], point['y'], (forground_color))
             time.sleep(sleepTime)
 
-    def __calculatPoints (self,end,start):
+    def __calculatPoints(self, end, start):
         """
         Methode gibt eine Liste von Werten, abhängig von den Start und Endpunkten zurück
         :param end  : start der Linie
         :param start: ende der Linie
         """
-        value_list=[]
+        value_list = []
         if start < end:
-            for x_calculation in range (0, end-start+1):
+            for x_calculation in range(0, end - start + 1):
                 value_list.append(x_calculation)
         else:
-            for x_calculation in range (0,end-start-1,-1):
+            for x_calculation in range(0, end - start - 1, -1):
                 value_list.append(x_calculation)
         return value_list
-    
-    def __calculateXY (self,x_start,y_start,valueList,gradient,calculateY=True):
+
+    def __calculateXY(self, x_start, y_start, valueList, gradient, calculateY=True):
         """
         Methode gibt eine Liste von Werten, abhängig von den Start und Endpunkten zurück
         :param x_start: start der x-Kordinate
@@ -611,118 +605,117 @@ class MySenseHat(SenseHat):
         calculation = 0
         liste = []
         for calculation in valueList:
-            calculation_2nd= gradient * abs(calculation)
+            calculation_2nd = gradient * abs(calculation)
             if calculateY:
                 x = calculation + x_start
                 y = calculation_2nd + y_start
-                liste.append({'x':x,'y':y})
+                liste.append({'x': x, 'y': y})
             else:
                 x = calculation_2nd + x_start
                 y = calculation + y_start
-                liste.append({'x':x,'y':y})
-        return liste 
+                liste.append({'x': x, 'y': y})
+        return liste
 
 
-def Test_set_pixel(sense, do_test=False):
-        if do_test:
-            old_state = sense.debug_mode 
-            sense.debug_mode = LogLevel.WARNING
-            print('Test_set_pixel()....')
-            sense.clear()
-            sense.set_pixel(0, 0, 255, 0, 0)
-            sleep(0.5)
-            sense.set_pixel(7, 0, 0, 255, 0)
-            sleep(0.5)
-            sense.set_pixel(7.0, 7.0, 255, 255, 0)
-            sleep(0.5)
-            sense.set_pixel('0', '7 , 32', 255, 255, 255)
-            sleep(0.5)
-            sense.set_pixel(' 4, 0 ', '2,2', 255, 255, 0)
-            sleep(3)
+def TEST_set_pixel(sense, do_test=False):
+    if do_test:
+        old_state = sense.debug_mode
+        sense.debug_mode = LogLevel.WARNING
+        print('Test_set_pixel()....')
+        sense.clear()
+        sense.set_pixel(0, 0, 255, 0, 0)
+        sleep(0.5)
+        sense.set_pixel(7, 0, 0, 255, 0)
+        sleep(0.5)
+        sense.set_pixel(7.0, 7.0, 255, 255, 0)
+        sleep(0.5)
+        sense.set_pixel('0', '7 , 32', 255, 255, 255)
+        sleep(0.5)
+        sense.set_pixel(' 4, 0 ', '2,2', 255, 255, 0)
+        sleep(3)
+
+        sense.clear()
+        sense.set_pixel(8, 0, 255, 0, 0)
+        sense.set_pixel(8, -1, 255, 0, 0)
+        sense.set_pixel(8, 'zzzz', 255, 0, 0)
+
+        sense.set_debug_mode = old_state
+        print('... done')
 
 
-            sense.clear()
-            sense.set_pixel(8,  0, 255, 0, 0)
-            sense.set_pixel(8, -1, 255, 0, 0)
-            sense.set_pixel(8, 'zzzz', 255, 0, 0)
+def TEST_draw_line(sense, do_test=False):
+    if do_test:
+        print('TEST_color_functions...')
+        old_state = sense.debug_mode
+        sense.set_debug_mode = LogLevel.ALLWAYS
+        print('Test_draw_line()....')
+        print('     Rectangle....', end='')
+        sense.clear()
+        sense.draw_line(0, 0, 7, 0, 255, 0, 0, 0.1)
+        sleep(0.5)
+        sense.draw_line(7, 0, 7, 7, 0, 255, 0, 0.1)
+        sleep(0.5)
+        sense.draw_line(7, 7, 0, 7, 0, 0, 255, 0.1)  # Fehler: diese Linie wird von (0,0) nach (7,7) gezeichnet
+        sleep(0.5)
+        sense.draw_line(0, 7, 0, 0, 255, 255, 0, 0.1)  # Fehler: diese Linie wird von (0,0) nach (0,7) gezeichnet
+        print('... done')
+        sleep(3)
 
-          
-            sense.set_debug_mode = old_state
-            print('... done')
+        print('     Kreuz....', end='')
+        sense.clear()
+        sense.draw_line(0, 0, 7, 7, 255, 0, 0, 0.1)
+        sleep(0.5)
+        sense.draw_line(7, 0, 0, 7, 0, 255, 0, 0.1)
+        print('... done')
+        sleep(3)
 
+        print('     Blaues Plus....', end='')
+        sense.clear()
+        sense.draw_line(0, 4, 7, 4, 0, 0, 255, 0.1)
+        sleep(0.5)
+        sense.draw_line(4, 0, 4, 7, 0, 0, 255, 0.1)
+        print('... done')
+        sleep(3)
 
-def Test_draw_line(sense, do_test=False):
-        if do_test:
-            old_state = sense.debug_mode 
-            sense.set_debug_mode = LogLevel.ALLWAYS
-            print('Test_draw_line()....')
-            print('     Rectangle....', end='')
-            sense.clear()
-            sense.draw_line(0, 0, 7, 0, 255, 0, 0, 0.1)
-            sleep(0.5)
-            sense.draw_line(7, 0, 7, 7, 0, 255, 0, 0.1)
-            sleep(0.5)
-            sense.draw_line(7, 7, 0, 7, 0, 0, 255, 0.1)  # Fehler: diese Linie wird von (0,0) nach (7,7) gezeichnet
-            sleep(0.5)
-            sense.draw_line(0, 7, 0, 0, 255, 255, 0, 0.1)   # Fehler: diese Linie wird von (0,0) nach (0,7) gezeichnet
-            print('... done')
-            sleep(3)
+        print('     Gelbes fast Plus....', end='')
+        sense.clear()
+        sense.draw_line(0, 4, 7, 5, 255, 255, 0, 0.1)
+        sleep(0.5)
+        sense.draw_line(4, 0, 5, 7, 255, 255, 0, 0.1)
+        print('... done')
+        sleep(3)
 
-            print('     Kreuz....', end='')
-            sense.clear()
-            sense.draw_line(0, 0, 7, 7, 255, 0, 0, 0.1)
-            sleep(0.5)
-            sense.draw_line(7, 0, 0, 7, 0, 255, 0, 0.1)
-            print('... done')
-            sleep(3)
-
-            print('     Blaues Plus....', end='')
-            sense.clear()
-            sense.draw_line(0, 4, 7, 4, 0, 0, 255, 0.1)
-            sleep(0.5)
-            sense.draw_line(4, 0, 4, 7, 0, 0, 255, 0.1)
-            print('... done')
-            sleep(3)
-
-            print('     Gelbes fast Plus....', end='')
-            sense.clear()
-            sense.draw_line(0, 4, 7, 5, 255, 255, 0, 0.1)
-            sleep(0.5)
-            sense.draw_line(4, 0, 5, 7, 255, 255, 0, 0.1)
-            print('... done')
-            sleep(3)
+        sense.clear()
+        sense.set_debug_mode = old_state
 
 
-            sense.clear()
-
-            sense.set_debug_mode = old_state
-    
-        
-def Test_drawLine(sense, do_test):
-        if do_test:
-            old_state = sense.debug_mode 
-            sense.set_debug_mode = LogLevel.ALLWAYS
-            print('Test_draw_line()....')
-            sense.clear()
-            sense.drawLine(0,7,7,7,sleepTime=0.5)
-            sense.drawLine(7,7,7,0,sleepTime=0.5)
-            sense.drawLine(7,0,0,0,sleepTime=0.5)
-            sense.drawLine(0,0,0,7,sleepTime=0.5)
-            sense.drawLine(7,7,0,0,sleepTime=0.5)
-            sense.drawLine(7,0,0,7,sleepTime=0.5)
-            sense.clear()
-            sense.drawLine(0,0,7,7,sleepTime=0.5)
-            sense.drawLine(0,7,7,0,sleepTime=0.5)
-            sense.clear()
-            sense.drawLine(1,2,7,3,sleepTime=0.5)
+def TEST_drawLine(sense, do_test):
+    if do_test:
+        old_state = sense.debug_mode
+        sense.set_debug_mode = LogLevel.ALLWAYS
+        print('Test_draw_line()....')
+        sense.clear()
+        sense.drawLine(0, 7, 7, 7, sleepTime=0.5)
+        sense.drawLine(7, 7, 7, 0, sleepTime=0.5)
+        sense.drawLine(7, 0, 0, 0, sleepTime=0.5)
+        sense.drawLine(0, 0, 0, 7, sleepTime=0.5)
+        sense.drawLine(7, 7, 0, 0, sleepTime=0.5)
+        sense.drawLine(7, 0, 0, 7, sleepTime=0.5)
+        sense.clear()
+        sense.drawLine(0, 0, 7, 7, sleepTime=0.5)
+        sense.drawLine(0, 7, 7, 0, sleepTime=0.5)
+        sense.clear()
+        sense.drawLine(1, 2, 7, 3, sleepTime=0.5)
 
 
 if __name__ == '__main__':
+    TEST_color_functions(True)
+
     sense = MySenseHat()
-    sense.set_rotation(90)
-    Test_set_pixel(sense, True)
-    Test_draw_line(sense, True)
-    Test_drawLine(sense, True)
+    sense.set_rotation(180)
+    TEST_set_pixel(sense, False)
+    TEST_draw_line(sense, False)
+    TEST_drawLine(sense, False)
 
 
 
